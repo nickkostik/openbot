@@ -41,11 +41,25 @@ try:
     request = urllib.request.Request('http://127.0.0.1:1340/api/snapshotBoxStoreNow',
         data=b'{"includeIdleOnly":true}',
         headers={'content-type':'application/json','authorization':'Bearer '+token})
-    with urllib.request.urlopen(request, timeout=55) as response:
+    with urllib.request.urlopen(request, timeout=180) as response:
         result = json.load(response)
     sys.exit(0 if result.get('ok') is True else 1)
 except Exception:
     sys.exit(1)
+'''
+PREVIOUS_HIBERNATE_SCRIPT = HIBERNATE_SCRIPT.replace('timeout=180', 'timeout=55')
+HOOK_REPLACE = '''import hashlib,os,pathlib,stat,sys
+stage,target=map(pathlib.Path,sys.argv[1:3]);digest=sys.argv[3]
+for path in (stage,target):
+    info=path.lstat()
+    if not stat.S_ISREG(info.st_mode) or info.st_uid!=0:
+        raise RuntimeError('Refusing a foreign shutdown hook')
+fd=os.open(target,os.O_RDONLY|os.O_NOFOLLOW)
+try:
+    if hashlib.sha256(os.read(fd,4096)).hexdigest()!=digest:
+        raise RuntimeError('Shutdown hook changed before replacement')
+finally:os.close(fd)
+os.replace(stage,target)
 '''
 
 
@@ -212,7 +226,7 @@ def ensure_backup_permissions():
                        check=True, capture_output=True, timeout=5)
     PACK_DIR.chmod(0o700)
     # The stock hook attempts root-owned /run operations as box on this image.
-    # Preserve an existing native hook; provide the same flush API only if absent.
+    # Preserve a native/foreign hook. Upgrade only our exact previous fallback.
     try:
         hook = HIBERNATE_HOOK.lstat()
     except FileNotFoundError:
@@ -220,7 +234,13 @@ def ensure_backup_permissions():
     if hook is not None:
         if not stat.S_ISREG(hook.st_mode) or hook.st_uid != 0:
             raise RuntimeError('Refusing to replace a foreign shutdown hook')
-        return {'packDirectory': 'writable', 'hibernateHook': 'existing'}
+        previous = HIBERNATE_HOOK.read_bytes()
+        if previous != PREVIOUS_HIBERNATE_SCRIPT.encode():
+            return {'packDirectory': 'writable', 'hibernateHook': 'existing'}
+        saved = SD / 'recovery-snapshots/backup-hooks' / (hashlib.sha256(previous).hexdigest() + '.py')
+        saved.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+        if not saved.exists():
+            atomic_bytes(saved, previous)
     fd, name = tempfile.mkstemp(prefix='.openbot-backup-hook-', dir=SD)
     stage = HIBERNATE_HOOK.parent / ('.openbot-backup-hook-' + uuid.uuid4().hex)
     try:
@@ -228,15 +248,20 @@ def ensure_backup_permissions():
             source.write(HIBERNATE_SCRIPT)
         subprocess.run(['sudo', '-n', 'install', '-o', '0', '-g', '0', '-m', '755', name, str(stage)],
                        check=True, capture_output=True, timeout=5)
-        # Exclusive hard link: an intervening platform hook is never overwritten.
-        result = subprocess.run(['sudo', '-n', 'ln', str(stage), str(HIBERNATE_HOOK)],
-                                capture_output=True, timeout=5)
-        if result.returncode and not HIBERNATE_HOOK.exists():
-            raise RuntimeError('Shutdown hook installation failed')
+        if hook is None:
+            # Exclusive link: an intervening platform hook is never overwritten.
+            result = subprocess.run(['sudo', '-n', 'ln', str(stage), str(HIBERNATE_HOOK)],
+                                    capture_output=True, timeout=5)
+            if result.returncode and not HIBERNATE_HOOK.exists():
+                raise RuntimeError('Shutdown hook installation failed')
+        else:
+            subprocess.run(['sudo', '-n', '/usr/bin/python3', '-c', HOOK_REPLACE,
+                            str(stage), str(HIBERNATE_HOOK), hashlib.sha256(previous).hexdigest()],
+                           check=True, capture_output=True, timeout=5)
     finally:
         pathlib.Path(name).unlink(missing_ok=True)
         subprocess.run(['sudo', '-n', 'rm', '-f', str(stage)], capture_output=True, timeout=5)
-    return {'packDirectory': 'writable', 'hibernateHook': 'installed'}
+    return {'packDirectory': 'writable', 'hibernateHook': 'installed' if hook is None else 'updated'}
 
 
 def ensure_named_tunnel():

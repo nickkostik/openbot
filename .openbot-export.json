@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "repository": "nickkostik/openbot",
-  "sourceCommit": "a407ca1366b0e44b672c06550ff65c451e681021",
+  "sourceCommit": "e2349c9c64d3398c95b723dd7cf36379c0ef89cc",
   "sourceFileCount": 388,
   "publicDocumentation": true,
   "files": {
@@ -114,12 +114,12 @@
       "sha256": "1d9f44ffaa83197c7099fd3850371f0d35b1ea7a28ea47cc961b1a14ca74243e"
     },
     "docs/shareable-config/reference.md": {
-      "bytes": 42671,
-      "sha256": "9a7add878bc3fe640bf9fbd52106272c59bfe22583e349d7628d9b16227b5681"
+      "bytes": 43715,
+      "sha256": "ccd75ccba289116bd04bd5985e4934784a2b98dc678204a247ab32a3586e1370"
     },
     "docs/shareable-config/SKILL.md": {
-      "bytes": 12225,
-      "sha256": "a983a6845fe752c79788b8d0e739deedb37bec5c4fa46dcd1b8774492eced133"
+      "bytes": 12429,
+      "sha256": "d7d93c1b7d7b4d47b70953054cb7fe784d31ef7c7a959233d1c06683446f00ac"
     },
     "docs/shareable-readme.md": {
       "bytes": 10567,
@@ -138,8 +138,8 @@
       "sha256": "2c7d7eb96de7828740029b29b161a62d9830c65fd6cace841f60c87313ad344f"
     },
     "docs/updating.md": {
-      "bytes": 12197,
-      "sha256": "00c01c6381f6fe524545331b34ac99037910867ec37166349d198cd7f6522db8"
+      "bytes": 12720,
+      "sha256": "8055c4f98f61b873ac307b6eac8072fb58726443c02412be89613b695bf57d9c"
     },
     "install.sh": {
       "bytes": 51554,
@@ -354,8 +354,8 @@
       "sha256": "7f2dc4ae931a78b7f34c4c459d72b5586ece47e28c4dea4ed14a9cb0cdc3ef0d"
     },
     "recovery/hooks/computer-recovery.py": {
-      "bytes": 30420,
-      "sha256": "8fd5f06b6a4428a581b7a48ced937ad97a915823bcb4dd2936955cbefd7db480"
+      "bytes": 31712,
+      "sha256": "6617f149afd145b78820f6e037df9442d5889299e7ad2df53ed3c473634c7e31"
     },
     "recovery/hooks/diagnose-routing.py": {
       "bytes": 10047,
@@ -526,8 +526,8 @@
       "sha256": "9f5f39db1856bcb69baf4093bb821ef8aba567a28978fe8aee526503f47e94a6"
     },
     "recovery/hooks/test_computer_recovery.py": {
-      "bytes": 28652,
-      "sha256": "7d6ba2d2ee65a640d7cb95a1d716ea0c3e3227111392445399a121eb3aeb13eb"
+      "bytes": 31544,
+      "sha256": "da8d8ce346a65f2880c27346815615fada1366b7dafa517668b768952887a908"
     },
     "recovery/hooks/test_diagnose_routing.py": {
       "bytes": 17166,
@@ -706,12 +706,12 @@
       "sha256": "f8d1a78ca949aa7e31cc6a9db87a2e6d01c05e3aa9d644d297f180e20f84d738"
     },
     "skills/openbot-config/reference.md": {
-      "bytes": 42641,
-      "sha256": "8bca1df59d1785d1f3415509a7c290f0f131b08fe955e4e37017c25289089871"
+      "bytes": 43685,
+      "sha256": "bd5930c1aeb50e9a77b19841538735b1e56d8cb5bf1058f18f1de5abed3ef0aa"
     },
     "skills/openbot-config/SKILL.md": {
-      "bytes": 12215,
-      "sha256": "22ee89f7195eba7e835993129563c2853cff0dfa22b9c0c236637a8dfbce9bdb"
+      "bytes": 12419,
+      "sha256": "20b01acc4966274555463fe14602e993b18675c9fed46d3fb90567b0802f5258"
     },
     "src/agent-box.test.ts": {
       "bytes": 5571,

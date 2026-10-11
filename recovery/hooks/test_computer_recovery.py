@@ -215,9 +215,49 @@ class ComputerRecoveryTests(unittest.TestCase):
 
     def test_shutdown_hook_validates_flush_without_embedding_a_credential(self):
         ast.parse(m.HIBERNATE_SCRIPT)
+        ast.parse(m.HOOK_REPLACE)
+        self.assertIn('timeout=180',m.HIBERNATE_SCRIPT)
+        self.assertIn('timeout=55',m.PREVIOUS_HIBERNATE_SCRIPT)
         self.assertIn("result.get('ok') is True",m.HIBERNATE_SCRIPT)
         self.assertIn('snapshotBoxStoreNow',m.HIBERNATE_SCRIPT)
         self.assertNotIn('Bearer sk-',m.HIBERNATE_SCRIPT)
+
+    def test_previous_owned_hook_is_upgraded_and_backed_up_once(self):
+        with tempfile.TemporaryDirectory() as root:
+            sd=pathlib.Path(root);pack=sd/'pack';pack.mkdir();hook=sd/'hook'
+            hook.write_text(m.PREVIOUS_HIBERNATE_SCRIPT)
+            real_lstat=pathlib.Path.lstat
+            def inspect(path):
+                value=real_lstat(path)
+                return SimpleNamespace(st_mode=value.st_mode,st_uid=0) if path==hook or path.name.startswith('.openbot-backup-hook-') else value
+            def privileged(args,**options):
+                if args[2]=='install':
+                    pathlib.Path(args[-1]).write_bytes(pathlib.Path(args[-2]).read_bytes())
+                elif args[2]=='/usr/bin/python3':
+                    with mock.patch('sys.argv',['hook-replace',*args[-3:]]):exec(args[4],{})
+                elif args[2]=='rm':pathlib.Path(args[-1]).unlink(missing_ok=True)
+                else:self.fail('Unexpected privileged command')
+                return SimpleNamespace(returncode=0)
+            with mock.patch.object(m,'SD',sd),mock.patch.object(m,'PACK_DIR',pack),mock.patch.object(m,'HIBERNATE_HOOK',hook),mock.patch.object(pathlib.Path,'lstat',autospec=True,side_effect=inspect),mock.patch.object(m.subprocess,'run',side_effect=privileged) as run:
+                self.assertEqual(m.ensure_backup_permissions()['hibernateHook'],'updated')
+                calls=run.call_count
+                self.assertEqual(m.ensure_backup_permissions()['hibernateHook'],'existing')
+                self.assertEqual(run.call_count,calls)
+            self.assertEqual(hook.read_text(),m.HIBERNATE_SCRIPT)
+            saved=list((sd/'recovery-snapshots/backup-hooks').glob('*.py'))
+            self.assertEqual(len(saved),1);self.assertEqual(saved[0].read_text(),m.PREVIOUS_HIBERNATE_SCRIPT)
+
+    def test_owned_hook_upgrade_refuses_a_competing_native_replacement(self):
+        with tempfile.TemporaryDirectory() as root:
+            stage=pathlib.Path(root)/'stage';stage.write_text(m.HIBERNATE_SCRIPT)
+            hook=pathlib.Path(root)/'hook';hook.write_text('CONCURRENT NATIVE HOOK')
+            real_lstat=pathlib.Path.lstat
+            def inspect(path):
+                value=real_lstat(path);return SimpleNamespace(st_mode=value.st_mode,st_uid=0)
+            with mock.patch.object(pathlib.Path,'lstat',autospec=True,side_effect=inspect),mock.patch('sys.argv',['hook-replace',str(stage),str(hook),hashlib.sha256(m.PREVIOUS_HIBERNATE_SCRIPT.encode()).hexdigest()]):
+                with self.assertRaisesRegex(RuntimeError,'changed before replacement'):exec(m.HOOK_REPLACE,{})
+            self.assertEqual(hook.read_text(),'CONCURRENT NATIVE HOOK')
+            self.assertTrue(stage.exists())
 
     def test_syntax_failure_leaves_original_and_no_backup(self):
         with tempfile.TemporaryDirectory() as root:
