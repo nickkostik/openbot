@@ -39,6 +39,12 @@ Fresh installations can use the reviewed `prepare-local-engine.py` and first-bin
 
 In Official, preparation saves an unselected pair: `local-release-ready`, `localEngineSaved: true`, `nativeDeliveryVerified: false`, `activationDeferred: true`. It performs no local canary, changes no selected engine authority and does not pin the stock host. Offline readiness is separate from loading a host and from actual delivery. Removed runners or new interfaces need an exact reviewed source recipe and executable contracts; do not port by version guess, edit hashes or declare full parity.
 
+Evidence belongs to the exact captured source and engine generation. A newly captured release starts fresh proof/report state: it does not inherit an older generation, canary, readiness, error or rollback result; only historical `lastAppliedAtMs` is retained. Previous delivery proof cannot certify a new source, and passed native offline contracts do not establish live activation or delivery. A missing approval-roster API must keep local health busy; do not infer idle or bypass the activation hold.
+
+Reviewed credential interface ports must preserve the latest native credential lifecycle and authorization, refuse missing or stale credential references and never mirror secret values. Interface restoration still requires its own executable contracts and live local delivery proof.
+
+Exact-reviewed local approval ports must retain the complete extension and matching controller, preserve owner/team policies and enforce enabled review settings. Respect intentionally disabled settings; validate the lifecycle without switching configured approvals off.
+
 ## Complete backup and the native image update
 
 Before an image mutation, retain a verified recoverable backup of current data, configuration, selected engine/baseline pair and network identity. Retain durable off-box copies with owned manifests/pointers. Keep already verified external export archives outside synchronized home so the native updater does not copy the backup into another backup; never move the sole copy or exclude live agent data. Temporary storage is not durable recovery.

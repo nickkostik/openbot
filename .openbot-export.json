@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "repository": "nickkostik/openbot",
-  "sourceCommit": "b8e57a703ecbc34406f0e402ff255f79dc99544d",
+  "sourceCommit": "b20310d1b0a168d130558e73008e1657ffa102a1",
   "sourceFileCount": 388,
   "publicDocumentation": true,
   "files": {
@@ -114,12 +114,12 @@
       "sha256": "1d9f44ffaa83197c7099fd3850371f0d35b1ea7a28ea47cc961b1a14ca74243e"
     },
     "docs/shareable-config/reference.md": {
-      "bytes": 38165,
-      "sha256": "41565ac000491282897a2c1383d2af15c69eacf0808986c2748873baad1279e1"
+      "bytes": 40449,
+      "sha256": "8cd62d176852b4b9ae0e62cc9fead47509a14ec90dbcc3901fdeb18a2d27c4da"
     },
     "docs/shareable-config/SKILL.md": {
-      "bytes": 11966,
-      "sha256": "9091868e695e0a9037cbe6358af58c8f84af2460d4f77a4113b2cb0a8c6d7641"
+      "bytes": 12225,
+      "sha256": "a983a6845fe752c79788b8d0e739deedb37bec5c4fa46dcd1b8774492eced133"
     },
     "docs/shareable-readme.md": {
       "bytes": 10567,
@@ -138,8 +138,8 @@
       "sha256": "2c7d7eb96de7828740029b29b161a62d9830c65fd6cace841f60c87313ad344f"
     },
     "docs/updating.md": {
-      "bytes": 10952,
-      "sha256": "da21bedceee25ee7391a853bdbc8acf541f74373e9932058f9c953d39ac67ab8"
+      "bytes": 12011,
+      "sha256": "cf2340b66f7fd35b65f099d5a20e9afafad59494b808bdb6e3e8beb383f8c9b5"
     },
     "install.sh": {
       "bytes": 51554,
@@ -378,16 +378,16 @@
       "sha256": "8fb2a610410c9578df99193a1ab0399a6d0673c7c4032e8702b3ecb27d74f2e8"
     },
     "recovery/hooks/latest-box-compatibility.json": {
-      "bytes": 22122,
-      "sha256": "bee07385ba9ba45a9b7ee0f659c1d282b68d63a72749de67d6314344857eb9c3"
+      "bytes": 28776,
+      "sha256": "1bbb081d606f4e0414d3d9b988cc4e73832b848a225e91179de917f22ec71751"
     },
     "recovery/hooks/latest-box-ports.cjs": {
       "bytes": 10035,
       "sha256": "9c78d778d26599b9490d7fa384b7233cb80c7b56f90b62782097ee9e0eeb8f61"
     },
     "recovery/hooks/latest-local-engine.mjs": {
-      "bytes": 48546,
-      "sha256": "48f2cfbaab3dae5f06e19ae78a22fccd198ae8c035bfb75c3eff5e45c77cb449"
+      "bytes": 49979,
+      "sha256": "510d7b8c4c3812b7cbd76fd82a8e01a136081e670428867b8e44635d40b411e0"
     },
     "recovery/hooks/local-engine-inject.py": {
       "bytes": 2277,
@@ -414,8 +414,8 @@
       "sha256": "2685a95561586ca53100bb885cd0a16df3e0c56b583a06a18c8c0bf493244966"
     },
     "recovery/hooks/local-upstream-sync.py": {
-      "bytes": 55023,
-      "sha256": "725a0d8aae4a34717beb53f04d60571c899f08b561229138c4fbc0ed46167e85"
+      "bytes": 55364,
+      "sha256": "41cb68fae624e3015149f32ef6f4cc1cfa73e0c52308a9dfed1eb7accb5a8dab"
     },
     "recovery/hooks/migrate-local-bots.py": {
       "bytes": 32083,
@@ -566,8 +566,8 @@
       "sha256": "6afa20d60d92215faf3f0adfece30e91609a0dcb0f1577ec6aab10cdec845f7b"
     },
     "recovery/hooks/test_local_upstream_sync.py": {
-      "bytes": 36367,
-      "sha256": "74cd273cb692dc4dc20b8fbfd768a4634d5863e50bab34a81075661b818291f4"
+      "bytes": 38214,
+      "sha256": "29ce987cc10ff3e7b125ff481f8650d8b00e019b897f40503273feb354571708"
     },
     "recovery/hooks/test_migrate_local_bots.py": {
       "bytes": 39065,
@@ -682,8 +682,8 @@
       "sha256": "f5ff9b6411ce22da6adc291d64dbcc7e53aede43e05c3f01904b1661f89a9361"
     },
     "recovery/hooks/verify-latest-local-engine.cjs": {
-      "bytes": 20314,
-      "sha256": "fe79971c8d0f1270631c7073a746fb08e71199b48f904437a747aa4df66730e6"
+      "bytes": 23610,
+      "sha256": "d92206582b8dfe994c3a9745495fe217d392d62f882b9a1a01a616dfd770a2c0"
     },
     "recovery/hooks/verify-store-request-compression.cjs": {
       "bytes": 4637,
@@ -706,12 +706,12 @@
       "sha256": "f8d1a78ca949aa7e31cc6a9db87a2e6d01c05e3aa9d644d297f180e20f84d738"
     },
     "skills/openbot-config/reference.md": {
-      "bytes": 38135,
-      "sha256": "84a1263e011ca31563015b0d7126dde87dfbc2cdad451681a7fa8437de2f63a0"
+      "bytes": 40419,
+      "sha256": "5fd8429e74783962977c1653687fa380afd342542c0c8725f73744ec74c62f26"
     },
     "skills/openbot-config/SKILL.md": {
-      "bytes": 11956,
-      "sha256": "f0b2da8677ba02ff64f9945b01b179c379b8f3905d0fbd0cac36ac497edc2330"
+      "bytes": 12215,
+      "sha256": "22ee89f7195eba7e835993129563c2853cff0dfa22b9c0c236637a8dfbce9bdb"
     },
     "src/agent-box.test.ts": {
       "bytes": 5571,

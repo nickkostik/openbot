@@ -15,6 +15,10 @@ const permissionBoundary=s.indexOf('/*! Bundled license information:');
 s=s.slice(0,permissionBoundary)+'module.exports.mcpPermissions = typeof effectiveMcpToolPermission === "undefined" ? null : { effective: effectiveMcpToolPermission, scope: mcpToolPermissionScope, withPolicy: withMcpToolPermissionPolicy, readAccess: isReadForToolPermissions, management: SandMcpInstructionsAndToggles, settings: SettingsService };\n'+s.slice(permissionBoundary);
 const contextBoundary=s.indexOf('/*! Bundled license information:');
 s=s.slice(0,contextBoundary)+'module.exports.requestContext = __openbot_box_createHostRequestContext;\n'+s.slice(contextBoundary);
+const credentialBoundary=s.indexOf('/*! Bundled license information:');
+s=s.slice(0,credentialBoundary)+'module.exports.credentials = { coordinator: CredentialCoordinator, factory: startCredentialProvider };\n'+s.slice(credentialBoundary);
+const reviewBoundary=s.indexOf('/*! Bundled license information:');
+s=s.slice(0,reviewBoundary)+'module.exports.autoReview = typeof __openbot_box_autoReviewExtension === "undefined" ? autoReviewExtension : __openbot_box_autoReviewExtension;\n'+s.slice(reviewBoundary);
 const mod=new Module(process.argv[2]);mod.filename=path.join(path.dirname(host),'openbot-offline-check.cjs');mod.paths=Module._nodeModulePaths(path.dirname(host));
 async function check() {
   const assert=require('node:assert/strict');
@@ -56,6 +60,44 @@ async function check() {
   legacyRegistry.getExternalCatalogOptions=()=>undefined;
   assert.ok(x.promptMcpOptions(undefined,[],toolSet));
   for(const method of ['kickstartIfPending','requestDiskSaverAudit','requireRunnerComposition','prepareForUpgrade'])assert.equal(typeof x.SandHost.prototype[method],'function');
+  const credentialLoads=[];
+  const credentialCoordinator=new x.credentials.coordinator({
+    loadDirectory:async mode=>{credentialLoads.push(mode);return {items:[]};}});
+  const credentialAccess=credentialCoordinator.createAccess(async()=>0);
+  assert.equal(await credentialAccess.isConnected(),true);
+  assert.deepEqual(await credentialAccess.list(),[]);
+  const missingCredential=await credentialAccess.resolveBrowserTarget({
+    credentialId:'missing',connectionId:'missing',catalogRevision:'missing'},'https://example.invalid');
+  assert.equal(missingCredential.ok,false);
+  assert.ok(credentialLoads.length>0);
+  for(const exportName of ['accessForAgentWindow','status','agentToolLease'])
+    assert.ok(new RegExp('\\b'+exportName+'\\s*:').test(x.credentials.factory.toString()));
+  const approvalStops=[];let reviewEnabled=false;
+  const reviewService=await x.autoReview.start({host:{environment},onStop:fn=>approvalStops.push(fn),
+    deps:{auth,experiments:{checkFeatureGate:()=>true},
+      settings:{getAutoReviewInstructions:()=>({isEnabled:reviewEnabled})},
+      'team-admin-policy':{isAutoReviewEnforced:()=>false,waitForPolicy:async()=>{}},
+      telemetry:{logs:{}},transcript:{createAwaitingStateSink:()=>({clearForTab:()=>{}}),
+        listAgentIds:async()=>[],expireAllPendingAutoReviewApprovalCards:async()=>{}}}});
+  const reviewBinding=reviewService.bindRunner({agentId:'offline',approvalsResolvable:true,onUpdate:()=>{}});
+  assert.equal(reviewBinding.autoReviewModes.hostShell,'off');
+  reviewEnabled=true;assert.equal(reviewBinding.getAutoReviewModes().hostShell,'enforce');
+  assert.deepEqual(reviewService.agentIdsWithPendingApprovals(),[]);
+  assert.equal(reviewService.pendingAwaitingState('offline'),null);
+  assert.ok(reviewBinding.autoReviewController);
+  for(const stop of approvalStops)stop();
+  const transcriptHealth=new Proxy({liveRunningAgentIds:()=>new Set(['running'])},
+    {get:(target,name)=>target[name]??(()=>false)});
+  const approvalHealth={hostExtensions:{api:()=>({})},transcript:transcriptHealth};
+  if(s.includes('typeof autoReview.agentIdsWithPendingApprovals !== "function"')) {
+    assert.equal(x.SandHost.prototype.allRunningAgentsAwaitApproval.call(approvalHealth),false);
+    const health={...approvalHealth,rosterBookkeeping:{isBusy:true,latestActiveAgentId:'running'},
+      allRunningAgentsAwaitApproval:()=>x.SandHost.prototype.allRunningAgentsAwaitApproval.call(approvalHealth)};
+    const result=x.SandHost.prototype.getHealth.call(health);
+    assert.equal(result.isBusy,true);assert.equal(result.busyOnlyAwaitingApproval,false);
+    approvalHealth.hostExtensions.api=()=>({agentIdsWithPendingApprovals:()=>['running']});
+    assert.equal(x.SandHost.prototype.allRunningAgentsAwaitApproval.call(approvalHealth),true);
+  }
   const dir=fs.mkdtempSync(require('node:path').join(require('node:os').tmpdir(),'openbot-db-compat-'));
   const dbPath=require('node:path').join(dir,'00000000-0000-4000-8000-000000000000','store.db');
   try {
