@@ -331,6 +331,8 @@ Planning reconstructs the exact artifacts against current payload/dependencies a
 
 Existing pins use `refresh-local-engine.py --plan` to validate the complete pipeline and explicitly authorized `--apply` to select a checked generation; it does not directly signal the host. The full owned recovery/follower activation path still requires controlled loading, actual local file-tool/exact-delivered-reply canary, configuration comparison and attempt-owned rollback. Do not manually copy a bundle over the native host.
 
+`/prepare-upgrade` is a host-bundle reload checkpoint with `owner: "upgrade"`; native `pauseTurnsForRecreate` intentionally refuses that owner. Preserve-data `RecreateSandBox` preparation instead uses authenticated `/api/prepareBoxForRecreate` and requires native `owner: "recreate"`, `quiescent: true` before a fresh snapshot and admission. Resolve leftover host checkpoints through owned native supervisor controls when safe to reload, preserving configuration; never clear native fences or mask `busy`. Reconcile an uncertain admitted operation instead of replaying it. Require a successful terminal image result and separate post-image delivery proof.
+
 ### Opt-in upstream release follower
 
 Follower policy `openbot-upstream-sync.json`:
