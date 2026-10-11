@@ -503,3 +503,21 @@ test("post-acceptance turn failures are observed without changing settlement or 
     assert.equal(fs.readdirSync(dir).length,1);
   } finally { fs.rmSync(dir,{recursive:true,force:true}); }
 });
+
+test("turn diagnostics retain only a native missing-member name, never the receiver or free-form error", async () => {
+  const dir=fs.mkdtempSync(join(tmpdir(),"openbot-turn-interface-")), prefix=join(dir,"turn-");
+  const session={id:"40fb2421-c794-4f92-b707-171d6b0d9968"};
+  try {
+    class Runtime { async runAgentTurn(_session,message) {throw new TypeError(message);} }
+    installLocalEngineTurnTrace(Runtime,fs,prefix);
+    await assert.rejects(new Runtime().runAgentTurn(session,"privateReceiver.nativeReader is not a function"));
+    let raw=fs.readFileSync(prefix+session.id+".json","utf8");
+    assert.equal(JSON.parse(raw).missingMember,"nativeReader");assert.equal(raw.includes("privateReceiver"),false);
+    for(const message of ["private prompt nativeReader is not a function","token=https://private.example",
+      "privateReceiver.secret-key is not a function","nativeReader is not a function"]) {
+      await assert.rejects(new Runtime().runAgentTurn(session,message));
+      raw=fs.readFileSync(prefix+session.id+".json","utf8");
+      assert.equal(JSON.parse(raw).missingMember,undefined);assert.equal(raw.includes("private"),false);
+    }
+  } finally {fs.rmSync(dir,{recursive:true,force:true});}
+});

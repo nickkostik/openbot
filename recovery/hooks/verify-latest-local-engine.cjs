@@ -15,6 +15,14 @@ const permissionBoundary=s.indexOf('/*! Bundled license information:');
 s=s.slice(0,permissionBoundary)+'module.exports.mcpPermissions = typeof effectiveMcpToolPermission === "undefined" ? null : { effective: effectiveMcpToolPermission, scope: mcpToolPermissionScope, withPolicy: withMcpToolPermissionPolicy, readAccess: isReadForToolPermissions, management: SandMcpInstructionsAndToggles, settings: SettingsService };\n'+s.slice(permissionBoundary);
 const contextBoundary=s.indexOf('/*! Bundled license information:');
 s=s.slice(0,contextBoundary)+'module.exports.requestContext = __openbot_box_createHostRequestContext;\n'+s.slice(contextBoundary);
+const credentialBoundary=s.indexOf('/*! Bundled license information:');
+s=s.slice(0,credentialBoundary)+'module.exports.credentials = { coordinator: CredentialCoordinator, factory: startCredentialProvider };\n'+s.slice(credentialBoundary);
+const reviewBoundary=s.indexOf('/*! Bundled license information:');
+s=s.slice(0,reviewBoundary)+'module.exports.autoReview = typeof __openbot_box_autoReviewExtension === "undefined" ? autoReviewExtension : __openbot_box_autoReviewExtension;\n'+s.slice(reviewBoundary);
+const policyBoundary=s.indexOf('/*! Bundled license information:');
+s=s.slice(0,policyBoundary)+'module.exports.teamPolicy = typeof __openbot_box_createTeamAdminPolicyService === "undefined" ? createTeamAdminPolicyService : __openbot_box_createTeamAdminPolicyService; module.exports.nativeClock = realClock;\n'+s.slice(policyBoundary);
+const formBoundary=s.indexOf('/*! Bundled license information:');
+s=s.slice(0,formBoundary)+'module.exports.localForms = {extension: typeof __openbot_box_sessionExtension === "undefined" ? sessionExtension : __openbot_box_sessionExtension, service: typeof __openbot_box_UserFormService === "undefined" ? UserFormService : __openbot_box_UserFormService};\n'+s.slice(formBoundary);
 const mod=new Module(process.argv[2]);mod.filename=path.join(path.dirname(host),'openbot-offline-check.cjs');mod.paths=Module._nodeModulePaths(path.dirname(host));
 async function check() {
   const assert=require('node:assert/strict');
@@ -56,6 +64,75 @@ async function check() {
   legacyRegistry.getExternalCatalogOptions=()=>undefined;
   assert.ok(x.promptMcpOptions(undefined,[],toolSet));
   for(const method of ['kickstartIfPending','requestDiskSaverAudit','requireRunnerComposition','prepareForUpgrade'])assert.equal(typeof x.SandHost.prototype[method],'function');
+  const credentialLoads=[];
+  const credentialCoordinator=new x.credentials.coordinator({
+    loadDirectory:async mode=>{credentialLoads.push(mode);return {items:[]};}});
+  const credentialAccess=credentialCoordinator.createAccess(async()=>0);
+  assert.equal(await credentialAccess.isConnected(),true);
+  assert.deepEqual(await credentialAccess.list(),[]);
+  const missingCredential=await credentialAccess.resolveBrowserTarget({
+    credentialId:'missing',connectionId:'missing',catalogRevision:'missing'},'https://example.invalid');
+  assert.equal(missingCredential.ok,false);
+  assert.ok(credentialLoads.length>0);
+  for(const exportName of ['accessForAgentWindow','status','agentToolLease'])
+    assert.ok(new RegExp('\\b'+exportName+'\\s*:').test(x.credentials.factory.toString()));
+  const policyClock=x.nativeClock;
+  const teamPolicy=x.teamPolicy({clock:policyClock,getTeamId:()=>null,log:()=>{},
+    getDashboardClient:()=>({getTeamAdminSettingsOrEmptyIfNotInTeam:async()=>({})})});
+  assert.equal(await teamPolicy.waitForPolicy(),true);
+  assert.equal(teamPolicy.isAutoReviewEnforced(),false);
+  const enforcedTeamPolicy=x.teamPolicy({clock:policyClock,getTeamId:()=>1,log:()=>{},
+    getDashboardClient:()=>({getTeamAdminSettingsOrEmptyIfNotInTeam:async()=>({
+      sandAutoReviewControls:{enforceEnabled:true},backgroundAgentSettings:{disableCloudAgentsInSand:true}})})});
+  assert.equal(await enforcedTeamPolicy.waitForPolicy(),true);
+  assert.equal(enforcedTeamPolicy.isAutoReviewEnforced(),true);
+  assert.equal(enforcedTeamPolicy.isCloudAgentsDisabled(),true);
+  const approvalStops=[];let reviewEnabled=false;
+  const reviewService=await x.autoReview.start({host:{environment},onStop:fn=>approvalStops.push(fn),
+    deps:{auth,experiments:{checkFeatureGate:()=>true},
+      settings:{getAutoReviewInstructions:()=>({isEnabled:reviewEnabled})},
+      'team-admin-policy':teamPolicy,
+      telemetry:{logs:{}},transcript:{createAwaitingStateSink:()=>({clearForTab:()=>{}}),
+        listAgentIds:async()=>[],expireAllPendingAutoReviewApprovalCards:async()=>{}}}});
+  const reviewBinding=reviewService.bindRunner({agentId:'offline',approvalsResolvable:true,onUpdate:()=>{}});
+  assert.equal(reviewBinding.autoReviewModes.hostShell,'off');
+  reviewEnabled=true;assert.equal(reviewBinding.getAutoReviewModes().hostShell,'enforce');
+  assert.deepEqual(reviewService.agentIdsWithPendingApprovals(),[]);
+  assert.equal(reviewService.pendingAwaitingState('offline'),null);
+  assert.ok(reviewBinding.autoReviewController);
+  for(const stop of approvalStops)stop();
+  teamPolicy.dispose();enforcedTeamPolicy.dispose();
+  for(const name of ['startUserForm','endUserForm','hasUserFormRemapHold','remapUserFormTargets',
+    'startVirtualCard','pendingVirtualCard','forgetVirtualCard'])
+    assert.ok(new RegExp('\\b'+name+'\\s*:').test(x.localForms.extension.start.toString()));
+  const forms=new x.localForms.service({clock:policyClock});
+  for(const name of ['start','end','fill','holdForRemap','hasRemapHold','remap','settleRemap','forget'])
+    assert.equal(typeof forms[name],'function');
+  assert.equal(forms.hasRemapHold('offline'),false);
+  assert.deepEqual(await forms.remap({agentId:'offline',targets:[]}),{kind:'no_hold'});
+  assert.equal(forms.holdForRemap('offline',{requestId:'fixture',values:[],consentedHost:'fixture.invalid'}),true);
+  assert.equal(forms.hasRemapHold('offline'),true);
+  assert.equal(forms.holdForRemap('offline',{requestId:'duplicate'}),false);
+  assert.deepEqual(await forms.remap({agentId:'offline',targets:[{fieldId:'unknown'}]}),
+    {kind:'unknown_fields',heldFieldIds:[],unknownFieldIds:['unknown']});
+  assert.deepEqual(forms.settleRemap({agentId:'offline',requestId:'wrong'}),{kind:'not_remapped'});
+  assert.equal(forms.hasRemapHold('offline'),true);
+  assert.deepEqual(forms.settleRemap({agentId:'offline',requestId:'fixture'}),{kind:'not_remapped'});
+  assert.equal(forms.hasRemapHold('offline'),false);
+  assert.equal(forms.holdForRemap('offline',{requestId:'second',values:[]}),true);
+  forms.forget('offline');assert.equal(forms.hasRemapHold('offline'),false);
+  const transcriptHealth=new Proxy({liveRunningAgentIds:()=>new Set(['running'])},
+    {get:(target,name)=>target[name]??(()=>false)});
+  const approvalHealth={hostExtensions:{api:()=>({})},transcript:transcriptHealth};
+  if(s.includes('typeof autoReview.agentIdsWithPendingApprovals !== "function"')) {
+    assert.equal(x.SandHost.prototype.allRunningAgentsAwaitApproval.call(approvalHealth),false);
+    const health={...approvalHealth,rosterBookkeeping:{isBusy:true,latestActiveAgentId:'running'},
+      allRunningAgentsAwaitApproval:()=>x.SandHost.prototype.allRunningAgentsAwaitApproval.call(approvalHealth)};
+    const result=x.SandHost.prototype.getHealth.call(health);
+    assert.equal(result.isBusy,true);assert.equal(result.busyOnlyAwaitingApproval,false);
+    approvalHealth.hostExtensions.api=()=>({agentIdsWithPendingApprovals:()=>['running']});
+    assert.equal(x.SandHost.prototype.allRunningAgentsAwaitApproval.call(approvalHealth),true);
+  }
   const dir=fs.mkdtempSync(require('node:path').join(require('node:os').tmpdir(),'openbot-db-compat-'));
   const dbPath=require('node:path').join(dir,'00000000-0000-4000-8000-000000000000','store.db');
   try {
@@ -121,11 +198,17 @@ async function check() {
     assert.equal(Object.hasOwn(x.browserRunCodeDeps({playwright:{}}),'playwrightRuntime'),true);
 
     let opts,reconciled=false,scope;
-    const nativeMcp={mcp:{getTools:async(ctx,config)=>{scope=[ctx,config];return []; }},management:{},plugins:{},reconcileBoxServers:async()=>{reconciled=true;}};
+    let originListed=false;const catalogReads=[];
+    const nativeMcp={mcp:{getTools:async(ctx,config)=>{scope=[ctx,config];return []; }},management:{},plugins:{},
+      peekCursorScmBuiltinListed:provider=>{catalogReads.push(provider);return originListed;},
+      reconcileBoxServers:async()=>{reconciled=true;}};
     const mcp=new x.mcp({backend:{backendUrl:'https://api2.cursor.sh'},auth:{getTeamId:()=>undefined,getAccessToken:async()=>'',getMachineId:()=> 'test'},foreverBox:{box:{}},settings:{},log:()=>{},createHostMcp:(options)=>{opts=options;return nativeMcp;}});
     assert.deepEqual(await opts.boxServers(),{});
     assert.deepEqual(await mcp.api.mcpForAgent('q').getTools('ctx','scope-json'),[]);
     assert.equal(reconciled,true);assert.deepEqual(scope,['ctx','scope-json']);assert.deepEqual(mcp.boxServersTurn,{ctx:'ctx',agentId:'q'});
+    assert.equal(mcp.api.peekCursorScmBuiltinListed('origin'),false);
+    originListed=true;assert.equal(mcp.api.peekCursorScmBuiltinListed('origin'),true);
+    assert.deepEqual(catalogReads,['origin','origin']);
     if(s.includes(permissionModule)) {
       assert.ok(x.mcpPermissions,'Latest MCP permission API must remain available');
       const p=x.mcpPermissions;

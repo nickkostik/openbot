@@ -297,6 +297,32 @@ class UpstreamSyncTests(unittest.TestCase):
         spawn.assert_not_called()
         self.assertEqual(result['state'], 'verification-failed')
 
+    def test_new_release_cannot_reuse_previous_delivery_or_candidate_evidence(self):
+        (self.root / 'openbot-upstream-sync.json').write_text('{"schemaVersion":1,"enabled":true}')
+        old = {'phase': 'verified', 'upstreamVersion': 'abcdef0',
+               'nativeDeliveryVerified': True, 'nativeCanary': {'delivered': True},
+               'configurationUnchanged': True, 'generationId': 'a' * 32,
+               'localEngineSaved': True, 'activationDeferred': True,
+               'compatibilityReport': 'old-source/report.json', 'errorType': 'OldError',
+               'rolledBack': True, 'finishedAtMs': 100, 'lastAppliedAtMs': 90}
+        (self.root / 'openbot-upstream-sync-state.json').write_text(json.dumps(old))
+        with mock.patch.object(M, 'vendor_origin', return_value=('https://vendor.example', 'host')), \
+             mock.patch.object(M, 'fetch_text', return_value='abcdef1'), \
+             mock.patch.object(M, 'stage_vendor', return_value=(self.root, {
+                 'clientVersion': '0.71.0', 'sourceSha256': 'b' * 64})), \
+             mock.patch.object(M, 'prune_releases'), \
+             mock.patch.object(M, 'gateway', return_value={'isBusy': True}):
+            result = M.sync(self.root, self.root / 'host.cjs', apply=True)
+        self.assertEqual(result['phase'], 'waiting-for-idle')
+        self.assertEqual(result['upstreamVersion'], 'abcdef1')
+        self.assertFalse(result['nativeDeliveryVerified'])
+        self.assertEqual(result['lastAppliedAtMs'], 90)
+        for field in ['nativeCanary', 'configurationUnchanged', 'generationId',
+                      'localEngineSaved', 'activationDeferred', 'compatibilityReport',
+                      'errorType', 'rolledBack', 'finishedAtMs']:
+            self.assertNotIn(field, result)
+        self.assertEqual(self.path.read_bytes(), self.before)
+
     def test_busy_reload_is_not_followed_by_a_probe_or_a_forced_restart(self):
         probe = mock.Mock()
         result = M.activate_and_verify(self.root, self.root / 'host.cjs', self.candidates,

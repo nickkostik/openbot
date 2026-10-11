@@ -887,11 +887,16 @@ def sync(root, host, apply=False, force=False, checkpoint=False):
     # observes the configured poll interval rather than probing every tick.
     folder, vendor = stage_vendor(root, version, base, prefix)
     prune_releases(root, version)
-    progress = {**previous, 'phase': 'captured', 'lastCheckedAtMs': now,
+    # Delivery proofs and candidate reports belong to one source/engine pair.
+    # A newly captured release must not inherit a previous generation's reply,
+    # rollback or readiness flags while waiting for its own assessment.
+    progress = {'phase': 'captured', 'startedAtMs': now, 'lastCheckedAtMs': now,
         'upstreamVersion': version, 'upstreamClientVersion': vendor['clientVersion'],
         'baseClientVersion': pin.get('clientVersion'), 'upstreamSourceSha256': vendor['sourceSha256'],
         'nextCheckAtMs': now + policy.get('pollSeconds', 1800) * 1000, 'nativeDeliveryVerified': False,
-        'featureParity': 'unknown', 'appliedInstructionCount': None, 'pendingInstructionCount': None,
+        'featureParity': 'unknown', 'fullFeatureParityVerified': False,
+        'lastAppliedAtMs': previous.get('lastAppliedAtMs'),
+        'appliedInstructionCount': None, 'pendingInstructionCount': None,
         'pendingSourceSections': None,
         'baseEngineSourceHashes': {kind: pin[kind + 'Sha256'] for kind in ('stock', 'wrapped')}}
     if apply:

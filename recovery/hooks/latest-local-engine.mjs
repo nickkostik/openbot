@@ -498,7 +498,7 @@ export function restoreLocalGatewayActions(latest, names = []) {
   return {edits, restored:[...names]};
 }
 
-function restoreSharedBehavior(old, latest, plan) {
+function restoreSharedBehavior(old, latest, plan, mcpListingReader) {
   const edits = [];
   for (const [name, memberName] of [["FileMemoryStore", "constructor"],
     ["MemoryService", "createAgentStore"], ["HostMcpAuthCompletion", "resolve"]]) {
@@ -529,6 +529,14 @@ function restoreSharedBehavior(old, latest, plan) {
     "          this.hostMcp.reconcileBoxServers().catch((error) => { " + dependency("reportFallback") + "('mcp_service', error); });\n" +
     "          return this.hostMcp.mcp.getTools(ctx, mcpConfigJson);\n" +
     "        }\n      }),");
+  if (mcpListingReader !== undefined) {
+    if (mcpListingReader !== "live-native-catalog" ||
+        source.includes("peekCursorScmBuiltinListed:"))
+      throw new Error("Unreviewed native MCP listing reader");
+    source = checkedReplace(source, "      mcp: this.hostMcp.mcp,",
+      "      mcp: this.hostMcp.mcp,\n" +
+      "      peekCursorScmBuiltinListed: (provider) => this.hostMcp.peekCursorScmBuiltinListed(provider),");
+  }
   edits.push({...mcp, text:source});
   const handoff = latest.classes.get("BoxHandoffService")?.members.find((m) => m.name === "start");
   if (!handoff) throw new Error("Missing box handoff port");
@@ -538,7 +546,7 @@ function restoreSharedBehavior(old, latest, plan) {
 }
 
 /** Keep modern SandHost lifecycle code while restoring the removed runner ports. */
-export function adaptSandHost(old, latest, plan) {
+export function adaptSandHost(old, latest, plan, healthPolicy) {
   const before = old.classes.get("SandHost"), target = latest.classes.get("SandHost");
   if (!before || !target) throw new Error("No unambiguous host class");
   let source = latest.source.slice(target.start, target.end);
@@ -547,6 +555,9 @@ export function adaptSandHost(old, latest, plan) {
     other.name === member.name && other.kind === member.kind));
   if (absent.some((member) => member.computed || typeof member.name !== "string")) throw new Error("Unreviewed host member");
   const approved = new Set(["ctx", "runnerComposition", "kickstartIfPending", "requestDiskSaverAudit", "requireRunnerComposition"]);
+  if (healthPolicy !== undefined && healthPolicy !== "optional-approval-roster")
+    throw new Error("Unreviewed local health contract");
+  if (healthPolicy === "optional-approval-roster") approved.add("allRunningAgentsAwaitApproval");
   if (absent.some((member) => !approved.has(member.name)) || absent.length !== approved.size)
     throw new Error("The removed host interface changed; explicit review required");
   source = source.slice(0, -1) + absent.map((member) => "\n  " + oldRange(old, plan, member.start, member.end)).join("") + "\n}";
@@ -560,8 +571,14 @@ export function adaptSandHost(old, latest, plan) {
     '    this.rosterBookkeeping = createHostRosterBookkeeping(hostExtensions);\n' + original.slice(compositionStart, compositionEnd));
   for (const name of ["getHealth", "allRunningAgentsAwaitApproval"]) {
     const a = before.members.find((member) => member.name === name), b = target.members.find((member) => member.name === name);
-    if (!a || !b) throw new Error("Missing local health contract");
-    source = checkedReplace(source, latest.source.slice(b.start, b.end), oldRange(old, plan, a.start, a.end));
+    if (!a || (!b && !(healthPolicy === "optional-approval-roster" && name === "allRunningAgentsAwaitApproval")))
+      throw new Error("Missing local health contract");
+    let local = oldRange(old, plan, a.start, a.end);
+    if (healthPolicy === "optional-approval-roster" && name === "allRunningAgentsAwaitApproval") {
+      local = checkedReplace(local, '    if (autoReview === void 0) return false;',
+        '    if (autoReview === void 0 || typeof autoReview.agentIdsWithPendingApprovals !== "function") return false;');
+    }
+    source = checkedReplace(source, b ? latest.source.slice(b.start, b.end) : oldRange(old, plan, a.start, a.end), local);
   }
   source = checkedReplace(source, '  async dispose() {\n    this.hostExtensions?.api("managed-setup").dispose();',
     '  async dispose() {\n    if (this.transcript.isPausingForUpgrade()) this.transcript.markAllRunningAgentsForUpgradeResume();\n' +
@@ -623,12 +640,36 @@ export function buildLatestLocalEngine(retained, upstream, reviewedSource) {
   const roots = new Set([...old.globals.values()].filter((record) =>
     record.module.startsWith("src/host/extensions/transcript/")).map((record) => record.module));
   const extensionPorts = REVIEWED_SOURCES.reviewedSources[sourceSha]?.retainedExtensions ?? [];
-  if (!Array.isArray(extensionPorts) || extensionPorts.some((name) => name !== "inferenceExtension"))
+  if (!Array.isArray(extensionPorts) || new Set(extensionPorts).size !== extensionPorts.length ||
+      extensionPorts.some((name) => !["inferenceExtension", "autoReviewExtension", "teamAdminPolicyExtension", "sessionExtension"].includes(name)))
     throw new Error("Unreviewed local extension port");
   for (const name of [...LOCAL_ROOTS, ...extensionPorts]) {
     const record = old.globals.get(name);
     if (!record) throw new Error("Missing retained BOX port: " + name);
     roots.add(record.module);
+  }
+  if (extensionPorts.includes("autoReviewExtension")) {
+    // The latest service only settles old server cards. A local runner needs
+    // its controller, owner/team policy and awaiting-state lifecycle together.
+    // Retain that reviewed service with the matching local extension factory.
+    const service = old.globals.get("AutoReviewService");
+    if (!service || service.module !== "src/host/extensions/auto-review/auto-review-service.ts")
+      throw new Error("Unreviewed local approval service");
+    roots.add(service.module);
+  }
+  if (extensionPorts.includes("teamAdminPolicyExtension")) {
+    const service = old.globals.get("createTeamAdminPolicyService");
+    if (!service || service.module !== "src/host/extensions/team-admin-policy/team-admin-policy-service.ts")
+      throw new Error("Unreviewed local team policy service");
+    roots.add(service.module);
+  }
+  if (extensionPorts.includes("sessionExtension")) {
+    // Keep the local form lifecycle paired with the retained transcript
+    // reply processor: holds carry consented values, not just an opaque ID.
+    const service = old.globals.get("UserFormService");
+    if (!service || service.module !== "src/host/extensions/session/user-form-service.ts")
+      throw new Error("Unreviewed local session form service");
+    roots.add(service.module);
   }
   const dependencies = [...Object.keys(sharedPorts), ...Object.keys(sharedApiPorts ?? {})].map((name) => {
     const record = old.globals.get(name);
@@ -640,7 +681,7 @@ export function buildLatestLocalEngine(retained, upstream, reviewedSource) {
   if (!registry) throw new Error("Latest host has no extension registry");
   const pos = latest.markers.find((marker) => marker.module === registry.module)?.start;
   if (pos === undefined) throw new Error("Latest registry has no module boundary");
-  const host = adaptSandHost(old, latest, plan);
+  const host = adaptSandHost(old, latest, plan, REVIEWED_SOURCES.reviewedSources[sourceSha]?.localHealthContract);
   const changes = plan.newEdits.filter((edit) => edit.start < host.start || edit.end > host.end);
   if (changes.length !== plan.newEdits.length) throw new Error("Unreviewed upstream binding inside the host adapter");
   const shared = restoreSharedClassMembers(old, latest, plan, sharedPorts);
@@ -650,7 +691,7 @@ export function buildLatestLocalEngine(retained, upstream, reviewedSource) {
   const gatewayActions = restoreLocalGatewayActions(latest,
     REVIEWED_SOURCES.reviewedSources[sourceSha]?.localGatewayActions);
   changes.push(...shared.edits, ...sharedApis.edits, ...gatewayReaders.edits, ...gatewayActions.edits,
-    ...restoreSharedBehavior(old, latest, plan));
+    ...restoreSharedBehavior(old, latest, plan, REVIEWED_SOURCES.reviewedSources[sourceSha]?.mcpListingReader));
   const restoredExperiments = REVIEWED_SOURCES.reviewedSources[sourceSha]?.restoredExperiments ?? [];
   changes.push(...restoreLocalExperimentEntries(old, latest, plan, restoredExperiments));
   const retainedGates = REVIEWED_SOURCES.reviewedSources[sourceSha]?.retainedRunnerGates;
