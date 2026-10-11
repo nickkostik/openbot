@@ -137,9 +137,14 @@ function installLocalEngineTurnTrace(Runtime, fs, prefix) {
       const match = line.match(/host-main\.cjs:(\d+):(\d+)\)?$/);
       return match ? [{line:Number(match[1]), column:Number(match[2])}] : [];
     });
+    // Only a JavaScript member-call signature is useful for interface ports.
+    // Do not record free-form messages, receivers, prompts, arguments or URLs.
+    const missingMember = error?.name === "TypeError" ? String(error.message ?? "").match(
+      /^(?:[A-Za-z_$][A-Za-z0-9_$]*\.)+([A-Za-z_$][A-Za-z0-9_$]{0,63}) is not a function$/)?.[1] : undefined;
     const data = {phase, pid:process.pid, atMs:Date.now(),
       ...(result ? {aborted:result.aborted === true, pausedForUpgrade:result.pausedForUpgrade === true} : {}),
-      ...(error ? {errorClass:["TypeError", "ReferenceError"].includes(error.name) ? error.name : "Error", frames} : {})};
+      ...(error ? {errorClass:["TypeError", "ReferenceError"].includes(error.name) ? error.name : "Error", frames,
+        ...(missingMember ? {missingMember} : {})} : {})};
     try {
       const fd = fs.openSync(prefix + session.id + ".json",
         fs.constants.O_WRONLY | fs.constants.O_CREAT | fs.constants.O_NOFOLLOW, 0o600);

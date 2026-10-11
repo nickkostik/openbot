@@ -498,7 +498,7 @@ export function restoreLocalGatewayActions(latest, names = []) {
   return {edits, restored:[...names]};
 }
 
-function restoreSharedBehavior(old, latest, plan) {
+function restoreSharedBehavior(old, latest, plan, mcpListingReader) {
   const edits = [];
   for (const [name, memberName] of [["FileMemoryStore", "constructor"],
     ["MemoryService", "createAgentStore"], ["HostMcpAuthCompletion", "resolve"]]) {
@@ -529,6 +529,14 @@ function restoreSharedBehavior(old, latest, plan) {
     "          this.hostMcp.reconcileBoxServers().catch((error) => { " + dependency("reportFallback") + "('mcp_service', error); });\n" +
     "          return this.hostMcp.mcp.getTools(ctx, mcpConfigJson);\n" +
     "        }\n      }),");
+  if (mcpListingReader !== undefined) {
+    if (mcpListingReader !== "live-native-catalog" ||
+        source.includes("peekCursorScmBuiltinListed:"))
+      throw new Error("Unreviewed native MCP listing reader");
+    source = checkedReplace(source, "      mcp: this.hostMcp.mcp,",
+      "      mcp: this.hostMcp.mcp,\n" +
+      "      peekCursorScmBuiltinListed: (provider) => this.hostMcp.peekCursorScmBuiltinListed(provider),");
+  }
   edits.push({...mcp, text:source});
   const handoff = latest.classes.get("BoxHandoffService")?.members.find((m) => m.name === "start");
   if (!handoff) throw new Error("Missing box handoff port");
@@ -633,7 +641,7 @@ export function buildLatestLocalEngine(retained, upstream, reviewedSource) {
     record.module.startsWith("src/host/extensions/transcript/")).map((record) => record.module));
   const extensionPorts = REVIEWED_SOURCES.reviewedSources[sourceSha]?.retainedExtensions ?? [];
   if (!Array.isArray(extensionPorts) || new Set(extensionPorts).size !== extensionPorts.length ||
-      extensionPorts.some((name) => !["inferenceExtension", "autoReviewExtension"].includes(name)))
+      extensionPorts.some((name) => !["inferenceExtension", "autoReviewExtension", "teamAdminPolicyExtension", "sessionExtension"].includes(name)))
     throw new Error("Unreviewed local extension port");
   for (const name of [...LOCAL_ROOTS, ...extensionPorts]) {
     const record = old.globals.get(name);
@@ -647,6 +655,20 @@ export function buildLatestLocalEngine(retained, upstream, reviewedSource) {
     const service = old.globals.get("AutoReviewService");
     if (!service || service.module !== "src/host/extensions/auto-review/auto-review-service.ts")
       throw new Error("Unreviewed local approval service");
+    roots.add(service.module);
+  }
+  if (extensionPorts.includes("teamAdminPolicyExtension")) {
+    const service = old.globals.get("createTeamAdminPolicyService");
+    if (!service || service.module !== "src/host/extensions/team-admin-policy/team-admin-policy-service.ts")
+      throw new Error("Unreviewed local team policy service");
+    roots.add(service.module);
+  }
+  if (extensionPorts.includes("sessionExtension")) {
+    // Keep the local form lifecycle paired with the retained transcript
+    // reply processor: holds carry consented values, not just an opaque ID.
+    const service = old.globals.get("UserFormService");
+    if (!service || service.module !== "src/host/extensions/session/user-form-service.ts")
+      throw new Error("Unreviewed local session form service");
     roots.add(service.module);
   }
   const dependencies = [...Object.keys(sharedPorts), ...Object.keys(sharedApiPorts ?? {})].map((name) => {
@@ -669,7 +691,7 @@ export function buildLatestLocalEngine(retained, upstream, reviewedSource) {
   const gatewayActions = restoreLocalGatewayActions(latest,
     REVIEWED_SOURCES.reviewedSources[sourceSha]?.localGatewayActions);
   changes.push(...shared.edits, ...sharedApis.edits, ...gatewayReaders.edits, ...gatewayActions.edits,
-    ...restoreSharedBehavior(old, latest, plan));
+    ...restoreSharedBehavior(old, latest, plan, REVIEWED_SOURCES.reviewedSources[sourceSha]?.mcpListingReader));
   const restoredExperiments = REVIEWED_SOURCES.reviewedSources[sourceSha]?.restoredExperiments ?? [];
   changes.push(...restoreLocalExperimentEntries(old, latest, plan, restoredExperiments));
   const retainedGates = REVIEWED_SOURCES.reviewedSources[sourceSha]?.retainedRunnerGates;

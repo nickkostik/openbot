@@ -43,7 +43,7 @@ Evidence belongs to the exact captured source and engine generation. A newly cap
 
 Reviewed credential interface ports must preserve the latest native credential lifecycle and authorization, refuse missing or stale credential references and never mirror secret values. Interface restoration still requires its own executable contracts and live local delivery proof.
 
-Exact-reviewed local approval ports must retain the complete extension and matching controller, preserve owner/team policies and enforce enabled review settings. Respect intentionally disabled settings; validate the lifecycle without switching configured approvals off.
+Exact-reviewed local approval ports must retain the complete extension and matching controller, preserve owner/team policies and enforce enabled review settings. Respect intentionally disabled settings; validate the lifecycle without switching configured approvals off. Include the matching exact-reviewed team-admin policy dependency, preserving real admin enforcement responses, cloud-agent restrictions and policy wait, cache invalidation and disposal.
 
 ## Complete backup and the native image update
 

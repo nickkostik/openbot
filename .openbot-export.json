@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "repository": "nickkostik/openbot",
-  "sourceCommit": "b20310d1b0a168d130558e73008e1657ffa102a1",
+  "sourceCommit": "a407ca1366b0e44b672c06550ff65c451e681021",
   "sourceFileCount": 388,
   "publicDocumentation": true,
   "files": {
@@ -114,8 +114,8 @@
       "sha256": "1d9f44ffaa83197c7099fd3850371f0d35b1ea7a28ea47cc961b1a14ca74243e"
     },
     "docs/shareable-config/reference.md": {
-      "bytes": 40449,
-      "sha256": "8cd62d176852b4b9ae0e62cc9fead47509a14ec90dbcc3901fdeb18a2d27c4da"
+      "bytes": 42671,
+      "sha256": "9a7add878bc3fe640bf9fbd52106272c59bfe22583e349d7628d9b16227b5681"
     },
     "docs/shareable-config/SKILL.md": {
       "bytes": 12225,
@@ -138,8 +138,8 @@
       "sha256": "2c7d7eb96de7828740029b29b161a62d9830c65fd6cace841f60c87313ad344f"
     },
     "docs/updating.md": {
-      "bytes": 12011,
-      "sha256": "cf2340b66f7fd35b65f099d5a20e9afafad59494b808bdb6e3e8beb383f8c9b5"
+      "bytes": 12197,
+      "sha256": "00c01c6381f6fe524545331b34ac99037910867ec37166349d198cd7f6522db8"
     },
     "install.sh": {
       "bytes": 51554,
@@ -378,16 +378,16 @@
       "sha256": "8fb2a610410c9578df99193a1ab0399a6d0673c7c4032e8702b3ecb27d74f2e8"
     },
     "recovery/hooks/latest-box-compatibility.json": {
-      "bytes": 28776,
-      "sha256": "1bbb081d606f4e0414d3d9b988cc4e73832b848a225e91179de917f22ec71751"
+      "bytes": 28889,
+      "sha256": "315a80a3dd60383bfb96f1f74806b3476e9deb44c82d6ebfd37ccd6691915b3f"
     },
     "recovery/hooks/latest-box-ports.cjs": {
-      "bytes": 10035,
-      "sha256": "9c78d778d26599b9490d7fa384b7233cb80c7b56f90b62782097ee9e0eeb8f61"
+      "bytes": 10445,
+      "sha256": "772b2037e5ebe661d39f4dccf6024c6002894d6d56b0c2cad60ad512c0a9502c"
     },
     "recovery/hooks/latest-local-engine.mjs": {
-      "bytes": 49979,
-      "sha256": "510d7b8c4c3812b7cbd76fd82a8e01a136081e670428867b8e44635d40b411e0"
+      "bytes": 51329,
+      "sha256": "4a8abccf46562a06541e198f381b1502bf1b00d80c97a0bacf6a0f7bfa906160"
     },
     "recovery/hooks/local-engine-inject.py": {
       "bytes": 2277,
@@ -546,8 +546,8 @@
       "sha256": "27e9d7545077c3357314dbb3cbec64449b11801bc534b15697ba1790dec1e8d4"
     },
     "recovery/hooks/test_latest_local_engine.mjs": {
-      "bytes": 33639,
-      "sha256": "7c3fe8b062bb3979e125cbc948e55e620ccefa03b4f1ec5ecdcc625d169098fe"
+      "bytes": 34862,
+      "sha256": "fffaae4bb202e9a5dfec7afa9d894e93de3a24f6caf0d040bfa2a2fd11a99b3b"
     },
     "recovery/hooks/test_local_engine_payload.py": {
       "bytes": 3107,
@@ -682,8 +682,8 @@
       "sha256": "f5ff9b6411ce22da6adc291d64dbcc7e53aede43e05c3f01904b1661f89a9361"
     },
     "recovery/hooks/verify-latest-local-engine.cjs": {
-      "bytes": 23610,
-      "sha256": "d92206582b8dfe994c3a9745495fe217d392d62f882b9a1a01a616dfd770a2c0"
+      "bytes": 26973,
+      "sha256": "64dc0fd93847bfa8eb6d54ddae66da42f63af5bc6e7c7f9da3863df3572d1638"
     },
     "recovery/hooks/verify-store-request-compression.cjs": {
       "bytes": 4637,
@@ -706,8 +706,8 @@
       "sha256": "f8d1a78ca949aa7e31cc6a9db87a2e6d01c05e3aa9d644d297f180e20f84d738"
     },
     "skills/openbot-config/reference.md": {
-      "bytes": 40419,
-      "sha256": "5fd8429e74783962977c1653687fa380afd342542c0c8725f73744ec74c62f26"
+      "bytes": 42641,
+      "sha256": "8bca1df59d1785d1f3415509a7c290f0f131b08fe955e4e37017c25289089871"
     },
     "skills/openbot-config/SKILL.md": {
       "bytes": 12215,

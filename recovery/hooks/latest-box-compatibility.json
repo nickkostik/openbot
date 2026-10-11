@@ -872,7 +872,9 @@
       },
       "retainedExtensions": [
         "inferenceExtension",
-        "autoReviewExtension"
+        "autoReviewExtension",
+        "teamAdminPolicyExtension",
+        "sessionExtension"
       ],
       "restoredExperiments": [
         "grok_bot_update_state_split_v2",
@@ -929,7 +931,8 @@
       "requestContextReaders": "optional-native-capabilities",
       "emailCapability": "optional-native-capability",
       "builtinCatalogOptions": "optional-native-reader",
-      "localHealthContract": "optional-approval-roster"
+      "localHealthContract": "optional-approval-roster",
+      "mcpListingReader": "live-native-catalog"
     }
   }
 }
