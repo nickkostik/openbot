@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "repository": "nickkostik/openbot",
-  "sourceCommit": "8ec785d0f49f2517e9769edab8c0d4e5fe50f5d1",
+  "sourceCommit": "0e0f5a3e9ed340d77b3caea20bb3cfc2202d6ee9",
   "sourceFileCount": 388,
   "publicDocumentation": true,
   "files": {
@@ -114,12 +114,12 @@
       "sha256": "1d9f44ffaa83197c7099fd3850371f0d35b1ea7a28ea47cc961b1a14ca74243e"
     },
     "docs/shareable-config/reference.md": {
-      "bytes": 44372,
-      "sha256": "e68494726877dc7f3fb2e1c0eac7711403c6db3d839edc2e2e7797f1f053d4ee"
+      "bytes": 46018,
+      "sha256": "1ef277b58b229c194c25f4e4e9698218b4df2cd06443820453697395b7ab9b41"
     },
     "docs/shareable-config/SKILL.md": {
-      "bytes": 12429,
-      "sha256": "d7d93c1b7d7b4d47b70953054cb7fe784d31ef7c7a959233d1c06683446f00ac"
+      "bytes": 12947,
+      "sha256": "4c38651f7e8209df7d7042831fe4473b283336a1519c3fe110da877380412522"
     },
     "docs/shareable-readme.md": {
       "bytes": 10567,
@@ -706,12 +706,12 @@
       "sha256": "f8d1a78ca949aa7e31cc6a9db87a2e6d01c05e3aa9d644d297f180e20f84d738"
     },
     "skills/openbot-config/reference.md": {
-      "bytes": 44342,
-      "sha256": "0a4450a6bb8eebabae03d24e70f1cb30a5d44c4071aab61ecaf59cab97a10fab"
+      "bytes": 45988,
+      "sha256": "7b7dd7ccec880c58ff870f90046af4e3252cbc581d28fdc7479189bd846031ef"
     },
     "skills/openbot-config/SKILL.md": {
-      "bytes": 12419,
-      "sha256": "20b01acc4966274555463fe14602e993b18675c9fed46d3fb90567b0802f5258"
+      "bytes": 12937,
+      "sha256": "bbe404f01a7169274076e73b6291e6b9979109c2ef2e7c3cc00ab7f057fd80ab"
     },
     "src/agent-box.test.ts": {
       "bytes": 5571,
