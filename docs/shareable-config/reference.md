@@ -166,6 +166,12 @@ Only boolean false opts out; absent/malformed policy enables six-hour discovery.
 
 Refresh uses at most two direct provider calls concurrently and only existing credentials/accounts. It reads latest authority after awaits, preserves removed/changed accounts, default/bot settings/protocols/parameters and never deletes routes omitted by discovery. Explicit context stays; derived context may refresh. Saved output caps never rise and can fall to a smaller positive published limit. A new effort list excluding a selected bot/model effort is held. Plan merge is serialized and compare-checked; no reconcile or bounce.
 
+### Maximize verified model context
+
+For an authorized largest-window configuration, verify each saved route’s positive published `catalogLimits.contextTokens` against its current provider scope and provenance. Use that route’s exact maximum, including million-token values; honor genuinely narrower provider limits. Missing, null, stale or unmatched limits remain unverified and unchanged until verified; never inflate them or borrow another provider’s same-slug value. A Codex recommended working window is operating guidance, distinct from the published route maximum and the separate output-token limit. [Official GPT-6.1 Sol documentation](https://developers.openai.com/api/docs/models/gpt-6.1-sol) publishes a 1,050,000-token context window; that fact alone does not prove a configured account accepts a full-window request.
+
+For a context-only edit while Official, do not call `POST /api/save` with `upsert-model` or `use-model`: those operations activate Custom. Back up the private saved plan, check expected original bytes and current mode, then atomically update only the affected existing model rows’ `contextTokens` in the resolved `openbot-plan.json`. Preserve mode, catalog IDs/providers, defaults, bot pins, reasoning, operational output budgets and compaction settings; do not rewrite mode or invoke reconcile. Validate/read back the plan and `GET /api/state`, comparing other settings before/after. The per-request hop reads the new JSON without a native host restart or mode save. Saved configuration and panel API readback establish configuration, not full-context provider acceptance or a native million-token turn.
+
 ## Save and HTTP contracts
 
 Loopback `POST /api/save`, `Content-Type: application/json`:
