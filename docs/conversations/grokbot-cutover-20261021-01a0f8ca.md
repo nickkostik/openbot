@@ -2,7 +2,8 @@
 
 - Thread: `01a0f8ca-d023-7541-bbe0-42d209e9f905`
 - Generated: 2026-10-21 21:42:56 UTC
-- Readable messages: 222 (22 user, 200 assistant)
+- Extended through the final Temporal cutover verification on 2026-10-21.
+- Readable messages: 237 (22 user, 215 assistant)
 - Scope: user and assistant messages only.
 - Omitted: tool calls and payloads, reasoning, system/developer prompts, binary attachments, raw logs, and private evidence.
 - Redactions: credentials, API keys, tokens, cookies, passwords, private keys, user identifiers, email addresses, and Tailnet addresses.
@@ -1823,5 +1824,129 @@ The desktop was launching with several relevant gates still off, including agent
 <sub>2026-10-21T21:41:51.297Z · ordinal 29255</sub>
 
 The conversation export is next. I’m producing a readable Markdown record from only the user and assistant messages, with tool traces, system/developer instructions, reasoning, binary attachments, and credentials removed before anything is written into Grok Bot.
+
+---
+
+---
+
+## Continuation — final Temporal cutover verification
+
+## Assistant
+
+<sub>2026-10-21T21:45:41.250Z · ordinal 29383</sub>
+
+The full audit found 59 enabled routines whose Temporal schedules are still stranded in the past, across 22 bots. I’m repairing those through each bot’s own routine tool, preserving every prompt and schedule and keeping one enabled copy per routine.
+
+---
+
+## Assistant
+
+<sub>2026-10-21T21:49:10.980Z · ordinal 29485</sub>
+
+I’m continuing from the live cutover state. I’ll verify the 22 routine repairs, fix the remaining scheduling anomalies, establish a working pin/upload path for the conversation, test the actual desktop UI features, then run a fresh Temporal turn with a real computer tool and recheck the panel and repositories.
+
+---
+
+## Assistant
+
+<sub>2026-10-21T21:49:22.537Z · ordinal 29500</sub>
+
+The box and all four services are active, and both required ports are listening. I’m now checking the actual post-repair routine records rather than relying on the accepted repair messages.
+
+---
+
+## Assistant
+
+<sub>2026-10-21T21:50:32.876Z · ordinal 29559</sub>
+
+The repair sweep did not fully succeed: it fixed some stale schedules but reduced enabled routines from 143 to 119. I’m restoring the routines that were unintentionally disabled and repairing their schedules directly, so the final state is complete rather than relying on bot-side guesses.
+
+---
+
+## Assistant
+
+<sub>2026-10-21T21:52:17.451Z · ordinal 29636</sub>
+
+The main regression is now isolated: 24 previously enabled routines were turned off by the repair turns, and 15 replacements were created alongside their originals. I’m testing the platform’s direct routine-enable API on one record first; if it recalculates `nextRunAt`, I’ll apply it safely to the whole set and disable only the same-agent replacement copies.
+
+---
+
+## Assistant
+
+<sub>2026-10-21T22:02:03.660Z · ordinal 29881</sub>
+
+All 143 original routines are enabled again, with no missing or extra production records. The remaining issue is their stale scheduler timestamps; direct toggling preserves the old timestamp, so I’m separating that scheduler repair from the enablement state and moving on to the pin and UI paths in parallel.
+
+---
+
+## Assistant
+
+<sub>2026-10-21T22:04:25.985Z · ordinal 29972</sub>
+
+The platform reports the desktop feature gates directly: several requested features are disabled server-side for this account, and the local override path is rejected because the account is neither an Anysphere user nor running a dev build. I’m leaving the official app untouched and testing the supported file/pin API on a valid Temporal bot instead.
+
+---
+
+## Assistant
+
+<sub>2026-10-21T22:09:07.954Z · ordinal 30085</sub>
+
+I’m taking over from the verified Temporal state. I’ll first re-audit the 143 routines and their scheduler timestamps, then fix scheduling and failed runs, resolve the supported pin path, revert the ineffective desktop overrides, and finish with fresh delivery, panel, ASAR, and repository checks. I will keep every production routine enabled.
+
+---
+
+## Assistant
+
+<sub>2026-10-21T22:09:21.421Z · ordinal 30100</sub>
+
+The panel and all four services are live on 870, and the three public URLs return 200. I’m now working from the routine API payloads rather than the UI: the main remaining issue is that enabled records still have stale or null scheduler timestamps, so I’m mapping those records before changing anything.
+
+---
+
+## Assistant
+
+<sub>2026-10-21T22:09:59.173Z · ordinal 30141</sub>
+
+The live payload confirms 143 routines enabled, but 72 scheduled routines across 22 bots are overdue. Five null timestamps are event-based records. I’m tracing the app’s own automation RPC now so the schedules can be recalculated through the supported update path instead of only toggling the enabled bit.
+
+---
+
+## Assistant
+
+<sub>2026-10-21T22:12:11.515Z · ordinal 30247</sub>
+
+The fresh per-bot API exposed a stale bulk-view problem and one real regression: Fleet Coder 2’s continuous routine is currently disabled even though the bulk snapshot said all 143 were on. I’m switching the audit to fresh per-bot reads for every bot with routines, then I’ll re-enable any drift and validate scheduler advancement from run history.
+
+---
+
+## Assistant
+
+<sub>2026-10-21T22:14:30.894Z · ordinal 30328</sub>
+
+A fresh Temporal turn just passed again on 870: it used the real shell and returned the verification marker from the bot. The routine records are all enabled, and the recent instantaneous failures are separate from delivery. I’m now tracing those failure frames while I finish the pin/upload path and remove the ineffective feature-gate override.
+
+---
+
+## Assistant
+
+<sub>2026-10-21T22:16:07.126Z · ordinal 30415</sub>
+
+The unsupported desktop feature-gate drop-in is now disabled, the desktop relaunched cleanly, and the official ASAR hash is unchanged. I’m using a sanitized Markdown artifact for the pin, so the conversation can be preserved without exposing tool payloads, credentials, or private evidence.
+
+---
+
+## Assistant
+
+<sub>2026-10-21T22:20:19.570Z · ordinal 30561</sub>
+
+The fresh live turn passed, and the scheduler has started succeeding again. One routine exposed a real safety regression: it changed Cline’s model on `pve` without approval. I’m reverting that change now and tightening the routine’s standing instructions so it cannot make configuration changes outside an explicit user request while remaining enabled.
+
+---
+
+## Assistant
+
+<sub>2026-10-21T22:23:54.944Z · ordinal 30693</sub>
+
+The sanitized conversation is now on GitHub `main` and Fleet Coder 2 is pinned on 870. The platform’s document/file library gates still block a native document pin, so I used the supported host pin for the active thread carrier and kept the full readable transcript as the stable GitHub artifact. I’m extending that artifact through the current cutover actions before the final verification pass.
 
 ---
