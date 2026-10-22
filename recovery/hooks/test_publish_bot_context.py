@@ -76,6 +76,7 @@ class PublicationTests(unittest.TestCase):
         patch = mock.patch.object(M, 'SD', self.sd)
         patch.start()
         self.addCleanup(patch.stop)
+        (self.sd / 'openbot-mode').write_text('custom\n')
         (self.sd / 'agents' / A).mkdir(parents=True)
         (self.sd / 'openbot-recovery').mkdir()
         (self.sd / 'recovery-snapshots').mkdir()
@@ -181,6 +182,30 @@ class PublicationTests(unittest.TestCase):
             self.assertEqual(M.publish(), {'status': 'not-configured'})
             gateway.assert_not_called()
         self.assertFalse((self.sd / 'workflows').exists())
+
+    def test_official_handoff_never_erases_the_verified_peer_roster_or_roles(self):
+        destination = self.sd / M.PUBLIC_RELATIVE
+        destination.parent.mkdir(parents=True)
+        content = json.dumps([{'id': B, 'harness': 'temporal', 'isGroup': True, 'memberIds': [C]}]).encode()
+        destination.write_bytes(content)
+        original = self.path.read_bytes()
+        for mode in ('official', None):
+            if mode is None:
+                (self.sd / 'openbot-mode').unlink()
+            else:
+                (self.sd / 'openbot-mode').write_text(mode)
+            with self.subTest(mode=mode), mock.patch.object(M, 'native') as gateway:
+                self.assertEqual(M.publish(), {'status': 'official-preserved'})
+                self.assertEqual(M.update_instructions(), {'status': 'official-preserved'})
+                gateway.assert_not_called()
+                self.assertEqual(destination.read_bytes(), content)
+                self.assertEqual(self.path.read_bytes(), original)
+
+    def test_unknown_mode_refuses_without_touching_context(self):
+        (self.sd / 'openbot-mode').write_text('unexpected')
+        with mock.patch.object(M, 'native') as gateway, self.assertRaisesRegex(RuntimeError, 'mode'):
+            M.publish()
+        gateway.assert_not_called()
 
 
 if __name__ == '__main__':

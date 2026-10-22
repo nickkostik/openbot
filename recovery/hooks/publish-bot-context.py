@@ -150,6 +150,15 @@ def atomic_owned_file(path, value, expected):
 
 
 def plan():
+    mode_path = SD / 'openbot-mode'
+    mode = owned_bytes(mode_path).decode().strip() if mode_path.exists() else 'official'
+    if mode == 'official':
+        # Native local summaries can omit Temporal room kinds and membership.
+        # This BOX publisher must not replace an owner-verified Temporal roster
+        # with an empty or flattened projection after handoff.
+        return {'status': 'official-preserved'}, [], []
+    if mode != 'custom':
+        raise RuntimeError('Unknown OpenBot mode; shared context was preserved')
     journal = SD / 'openbot-box-remint.json'
     source = SD / 'openbot-recovery/roster.json'
     if not journal.exists() or not source.exists():
@@ -170,7 +179,7 @@ def plan():
 
 def publish():
     result, projection, _ = plan()
-    if result['status'] == 'not-configured':
+    if result['status'] != 'planned':
         return result
     ensure_owned_directory(SD / 'workflows')
     ensure_owned_directory(SD / PUBLIC_RELATIVE.parent)
@@ -195,7 +204,7 @@ def with_notice(description):
 def update_instructions():
     """Explicit one-time update; never called by background publication."""
     result = publish()
-    if result['status'] == 'not-configured':
+    if result['status'] not in ('published', 'unchanged'):
         return result
     _, _, targets = plan()
     ensure_owned_directory(SD / 'recovery-snapshots')

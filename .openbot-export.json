@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "repository": "nickkostik/openbot",
-  "sourceCommit": "22058ebb3eb112b6b4cf286d9083932519d9bb95",
-  "sourceFileCount": 408,
+  "sourceCommit": "5aacdf36fb59e7e0884f5cf1b4b317b3bfb531e9",
+  "sourceFileCount": 425,
   "publicDocumentation": true,
   "files": {
     ".github/PULL_REQUEST_TEMPLATE.md": {
@@ -114,12 +114,12 @@
       "sha256": "1d9f44ffaa83197c7099fd3850371f0d35b1ea7a28ea47cc961b1a14ca74243e"
     },
     "docs/shareable-config/reference.md": {
-      "bytes": 46018,
-      "sha256": "1ef277b58b229c194c25f4e4e9698218b4df2cd06443820453697395b7ab9b41"
+      "bytes": 55031,
+      "sha256": "5b0172ba7297869d4f7ba1b157c31d66593b8870747d1c5eb0a14b54de053b70"
     },
     "docs/shareable-config/SKILL.md": {
-      "bytes": 12947,
-      "sha256": "4c38651f7e8209df7d7042831fe4473b283336a1519c3fe110da877380412522"
+      "bytes": 13943,
+      "sha256": "c403cf73704bfbac55a913bd9ec56fe825116e9c2f4849a3dc85dddf79218e5b"
     },
     "docs/shareable-readme.md": {
       "bytes": 10567,
@@ -346,8 +346,8 @@
       "sha256": "d845a079812c8ad9f22d4861c88b004bb2747275241adbff5231bf67f7e372b1"
     },
     "recovery/desktop-sidebar-authority/ensure-sidebar-patches.sh": {
-      "bytes": 2496,
-      "sha256": "e457a67a453ab6dd44095db31719f48dc8c97933f51e11aaf21980d2272afdb4"
+      "bytes": 3330,
+      "sha256": "2a6a63dafbeff763fa77098320367aec02f559b8025016984d234ee0f6b9b551"
     },
     "recovery/desktop-sidebar-authority/evidence/client-verification.json": {
       "bytes": 1016,
@@ -357,17 +357,21 @@
       "bytes": 10466,
       "sha256": "a6f43f9331addee147d6d56f45a2da6bc332662dffe92d9b16afde7522d06498"
     },
+    "recovery/desktop-sidebar-authority/patch-temporal-sidebar-preferences.py": {
+      "bytes": 7798,
+      "sha256": "2fb524304028a658f53c6522cc5f9a853b222342efd14af72afb7c75e411244c"
+    },
     "recovery/desktop-sidebar-authority/README.md": {
-      "bytes": 6492,
-      "sha256": "3d848170064ecf458daa879268395e7663d94787b9abba240a7565c795bb3160"
+      "bytes": 9752,
+      "sha256": "4b4c4ca91dd1d1a0c4d1b862877848ecbc8f582e8e9a133eafc628e13f3ce3b8"
     },
     "recovery/desktop-sidebar-authority/repair-client-cache.py": {
       "bytes": 7625,
       "sha256": "d693564b743d8199aef7e9684e914d9c7ec77af7264c1eba43c7fb4122c3a17e"
     },
     "recovery/desktop-sidebar-authority/systemd/grokbot-desktop.service.d/sidebar-authority.conf": {
-      "bytes": 315,
-      "sha256": "da244253d279a118872af1f481e3977b1a51f8c24a1d347543f0d5ae9d38a241"
+      "bytes": 385,
+      "sha256": "007c6f46a1f4479de3acbca58215df44a2b75fc768120a22e010fd3f215caadd"
     },
     "recovery/desktop-sidebar-authority/systemd/grokbot-sidebar-patches-timer.service": {
       "bytes": 225,
@@ -384,6 +388,14 @@
     "recovery/desktop-sidebar-authority/test_patch_sidebar_authority.py": {
       "bytes": 10938,
       "sha256": "b0c9d675b5f25ee636e1650a1a4962eabe538cde2c9f80799fc0afb885bbaa63"
+    },
+    "recovery/desktop-sidebar-authority/test_sidebar_watcher.py": {
+      "bytes": 3894,
+      "sha256": "41a7fe4ad3c9c3224d36f2ee9b12cfe5ae3a837bf029ead5c2f6c7b87de3b19a"
+    },
+    "recovery/desktop-sidebar-authority/test_temporal_sidebar_preferences.py": {
+      "bytes": 10917,
+      "sha256": "37336167dd01af2744c30e0eb3838964f4cbc088fce2ba14baaf5a61534a7a50"
     },
     "recovery/history-identities/normalize_history_entry_ids.py": {
       "bytes": 7814,
@@ -428,6 +440,18 @@
     "recovery/hooks/gate-watch.sh": {
       "bytes": 255,
       "sha256": "ef1bf18ea686782ca8231f6a7b18cbdc19ddc42f5faf4b8ca716112c29cde5cc"
+    },
+    "recovery/hooks/history-background-codec.mjs": {
+      "bytes": 41913,
+      "sha256": "2b6afbe60de78fb97acb791853c2fc26cca53d5a1d39ef995d4585a689b02e65"
+    },
+    "recovery/hooks/history-context-merge.py": {
+      "bytes": 8370,
+      "sha256": "af6c49e6982b42185bdeeb0d204cf1bdad67f00b3fab47cd13048861822b984d"
+    },
+    "recovery/hooks/history-context-recovery.md": {
+      "bytes": 10904,
+      "sha256": "ba362812f1ce4c130828f14d8dbaa8558dcd701582ea9470586785961b4e9d63"
     },
     "recovery/hooks/initialize-local-engine.py": {
       "bytes": 9710,
@@ -482,8 +506,8 @@
       "sha256": "3c3a77aa896b9cd80ba99e35b9b5f37ab6fc2cb8d3ebe8e2c4679af3c0527724"
     },
     "recovery/hooks/NETWORK_RECOVERY.md": {
-      "bytes": 4333,
-      "sha256": "60dda21b7eb66405ad3a2e927194c977113b2a06770733c6d567d823e6776576"
+      "bytes": 6083,
+      "sha256": "beca4b743c1ca4ee66c5ca132cb6faf4d197ed08d77403d06a9c19ef081e32ad"
     },
     "recovery/hooks/openbot-auto-assign.py": {
       "bytes": 4034,
@@ -501,6 +525,10 @@
       "bytes": 4984,
       "sha256": "f253fd7e898e88b4b57ec697dcdc0b2fde0536689fd00818eea83c7aaee79c64"
     },
+    "recovery/hooks/patch-store-transport.py": {
+      "bytes": 3879,
+      "sha256": "ff3f2d737b21f092caa32639ce8738a71ec31ce0ea350ae97e9c7001ac4335a1"
+    },
     "recovery/hooks/patch-working-state-listing.py": {
       "bytes": 1860,
       "sha256": "8fe4a33976e529377f117109aa686fe4d20ad4548ffbfbcd8390984df51d66db"
@@ -514,8 +542,8 @@
       "sha256": "a576a24ffab7dc38d12e941ce74b006cd5963b6cc3d1c2fdd4714811599c69e3"
     },
     "recovery/hooks/publish-bot-context.py": {
-      "bytes": 10692,
-      "sha256": "49a05abb87710279ea4a90f4776b0700b3492ec75d557638d95b2477a3c91634"
+      "bytes": 11234,
+      "sha256": "ed32da4f16d2cc6ab9e965aa18ae89533b9792d29a3dff1a56befce9275e24c5"
     },
     "recovery/hooks/publish-local-fleet.py": {
       "bytes": 17675,
@@ -536,6 +564,10 @@
     "recovery/hooks/remint-box-fleet.py": {
       "bytes": 45375,
       "sha256": "27cc827a068bc887e7b2749b8bf893d18918b6c42afba579fea14eff11193c30"
+    },
+    "recovery/hooks/repair-native-sidebar-settings.py": {
+      "bytes": 6706,
+      "sha256": "2015a5a98707d64cdef7dfdc0730027d5d7265a7476102e94747056ee39d9b6b"
     },
     "recovery/hooks/requirements-standalone-proxy.txt": {
       "bytes": 106,
@@ -585,6 +617,18 @@
       "bytes": 22929,
       "sha256": "2c431a5123f4276595ef37356b1f6d07ca41cebd3b03ef8625388818e5eac5f1"
     },
+    "recovery/hooks/temporal-peer-context.py": {
+      "bytes": 5838,
+      "sha256": "d2151eaa94dff826f40fd415a27d567287f3b056cbaa7821cf64bc94bbde0768"
+    },
+    "recovery/hooks/temporal-room-transfer.py": {
+      "bytes": 6011,
+      "sha256": "f09ca7ef53c1bbbb12ed2e0c754df694d819396e82c69966281a9347f62c3edc"
+    },
+    "recovery/hooks/temporal-routine-transfer.py": {
+      "bytes": 8633,
+      "sha256": "138a6a605bb7b80d2965f2cb8ca289a4afbf3acedbcebf16e0df46ad756b2f22"
+    },
     "recovery/hooks/test_box_store_range_read.mjs": {
       "bytes": 5220,
       "sha256": "8259d01c6699cac7bb47c84b29da2e6eaf7ffed3ca58540c597f7ab8ea5940f3"
@@ -612,6 +656,10 @@
     "recovery/hooks/test_gate_inject.py": {
       "bytes": 5257,
       "sha256": "9a9cb797ce85191fcc5175c0ae63237a14a85833b4d9da18a36cc39282b3b5be"
+    },
+    "recovery/hooks/test_history_context_merge.py": {
+      "bytes": 15673,
+      "sha256": "89f712718f0a633ee0bc3abf3bafb2e35c077858a67d6b8e905ee1dda40987f2"
     },
     "recovery/hooks/test_initialize_local_engine.py": {
       "bytes": 10929,
@@ -649,6 +697,10 @@
       "bytes": 9406,
       "sha256": "5f38740fe297887d1211c17c8973563de3117c474c1ef1fb986fcda7abe379f6"
     },
+    "recovery/hooks/test_native_sidebar_settings.py": {
+      "bytes": 7343,
+      "sha256": "bee906ab6ba10be080f893a8697c1cbbd50a862b34c460999b0c4aa8b2f9bbbd"
+    },
     "recovery/hooks/test_openbot_auto_assign.py": {
       "bytes": 3762,
       "sha256": "caea662f306b6922a08ef83d82076d76cb150defb98741a625bdddc94658f072"
@@ -664,6 +716,10 @@
     "recovery/hooks/test_patch_computer_egress.py": {
       "bytes": 4390,
       "sha256": "21f3dc0576f576a5d96a46e009d96489052999aacce185de6f502bf2a1ae924a"
+    },
+    "recovery/hooks/test_patch_store_transport.py": {
+      "bytes": 6042,
+      "sha256": "7981ff6bab736fdc0a9af68738628a472d32edd38929275e30c82f809778b727"
     },
     "recovery/hooks/test_patch_working_state_listing.py": {
       "bytes": 1351,
@@ -682,8 +738,8 @@
       "sha256": "e13316daa2eabaf2638d6eccf1974ef72b29fbd6acd9810530874fe3eb3ebb43"
     },
     "recovery/hooks/test_publish_bot_context.py": {
-      "bytes": 9782,
-      "sha256": "fec439bf8123a91cd8bd5732771f7f12b40c054a8b2d64a5446bde321cb27874"
+      "bytes": 11138,
+      "sha256": "eaa39179ea6fd4b8495e463bd61ce32600742901ddec911eba2bb254ace67352"
     },
     "recovery/hooks/test_publish_local_fleet.py": {
       "bytes": 14649,
@@ -737,6 +793,18 @@
       "bytes": 19968,
       "sha256": "1d3ac16d5e199e54d6c4cbd0c5665eec499c1796a58c12b684d1ef0b342ffb0c"
     },
+    "recovery/hooks/test_temporal_peer_context.py": {
+      "bytes": 4187,
+      "sha256": "2cac2e56592aa7672c4bcdbe3306ddf5609080146b110b05802be75bdd9528fa"
+    },
+    "recovery/hooks/test_temporal_room_transfer.py": {
+      "bytes": 5496,
+      "sha256": "b0b6d922dc7d3dcdf9d4a8c8e338b0db830c6f01ddf9be062e1e7977a39ab6d3"
+    },
+    "recovery/hooks/test_temporal_routine_transfer.py": {
+      "bytes": 8076,
+      "sha256": "e01a0a6d71d0459a4ae46c3ed4b1ab49793b1e866965cf5b85dc8c61bfc6186e"
+    },
     "recovery/hooks/test_transcript_text_inject.py": {
       "bytes": 5142,
       "sha256": "0647a111977faa63fcf37be82f0d27225273080c675ac356d227ec8b5cf1a6ee"
@@ -786,12 +854,12 @@
       "sha256": "f8d1a78ca949aa7e31cc6a9db87a2e6d01c05e3aa9d644d297f180e20f84d738"
     },
     "skills/openbot-config/reference.md": {
-      "bytes": 45988,
-      "sha256": "7b7dd7ccec880c58ff870f90046af4e3252cbc581d28fdc7479189bd846031ef"
+      "bytes": 55001,
+      "sha256": "51205f8cd88b9adb513ab973f07e03a5318f50c3d43b08033f131d08524a6c75"
     },
     "skills/openbot-config/SKILL.md": {
-      "bytes": 12937,
-      "sha256": "bbe404f01a7169274076e73b6291e6b9979109c2ef2e7c3cc00ab7f057fd80ab"
+      "bytes": 13933,
+      "sha256": "d07656499ab8da4e50d3e4668110634588ca644e33691436add4676d8aa186a0"
     },
     "src/agent-box.test.ts": {
       "bytes": 5571,
