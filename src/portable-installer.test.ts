@@ -266,6 +266,7 @@ test('shareable export contains exact committed product source and excludes priv
     'package.json': '{}\n', 'src/cli.ts': 'console.log("portable");\n',
     'recovery/hooks/generic.py': 'print("helper")\n',
     'recovery/desktop-sidebar-authority/patch-sidebar-authority.py': 'print("reviewed client recovery")\n',
+    'recovery/history-identities/normalize_history_entry_ids.py': 'print("offline history recovery")\n',
     'recovery/config/fleet.json': 'private fleet',
     'recovery/evidence/server.json': 'private server identity',
     'recovery/backups/private.tar.gz.gpg': 'private encrypted backup',
@@ -295,6 +296,7 @@ test('shareable export contains exact committed product source and excludes priv
   assert.equal(manifest.sourceCommit,execFileSync('git',['-C',repo,'rev-parse','HEAD'],{encoding:'utf8'}).trim());
   assert.equal(readFileSync(path.join(dest,'src/cli.ts'),'utf8'),'console.log("portable");\n');
   assert.equal(readFileSync(path.join(dest,'recovery/desktop-sidebar-authority/patch-sidebar-authority.py'),'utf8'),'print("reviewed client recovery")\n');
+  assert.equal(readFileSync(path.join(dest,'recovery/history-identities/normalize_history_entry_ids.py'),'utf8'),'print("offline history recovery")\n');
   for(const name of ['.git','.env','recovery/config','recovery/evidence','recovery/backups','recovery/README.md','payload/auth.json','payload/version.json','payload/openbot-local-engine','payload/capture/host-main.cjs.pre-openbot'])assert.equal(existsSync(path.join(dest,name)),false,name);
   assert.match(readFileSync(path.join(dest,'install.sh'),'utf8'),/example\/shareable/);
   assert.equal(JSON.parse(readFileSync(path.join(dest,'package.json'),'utf8')).repository.url,'git+https://github.com/example/shareable.git');

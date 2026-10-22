@@ -25,5 +25,6 @@ jobs:
       - run: npm run typecheck
       - run: python3 -m unittest discover -s recovery/hooks -p 'test_*.py'
       - run: python3 -m unittest discover -s recovery/desktop-sidebar-authority -p 'test_*.py'
+      - run: python3 -m unittest discover -s recovery/history-identities -p 'test_*.py'
       - run: python3 -m pip install -r recovery/hooks/requirements-standalone-proxy.txt
       - run: python3 recovery/hooks/standalone-proxy-check.py

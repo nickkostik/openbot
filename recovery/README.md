@@ -104,3 +104,5 @@ Provider subscription credentials are adapter-specific. OpenAI OAuth uses the au
 See [portable installation](../docs/portable-installation.md), the configuration skill and reference for concrete disk schemas and supervisor commands. Keep the prior engine/source generation and an encrypted backup until a fresh turn and tool result verify the new generation.
 
 [Linux desktop sidebar recovery](desktop-sidebar-authority/README.md) repairs stale roster routing and invalid transcript dates after a Temporal transfer.
+
+[History entry identity recovery](history-identities/README.md) prepares a detached copy of archived messages with bounded generated entry IDs and a private alias receipt.
