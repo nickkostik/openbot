@@ -75,6 +75,39 @@ should retain their service dependency instead.
 
 ## One-time cache recovery
 
+### Native Computer preferences
+
+Account runtime sections and native Computer settings have different schemas.
+The native version-1 `settings.json` requires `agentIds` and `isCollapsed` on
+every section, including an empty Unassigned section. Copying account objects
+directly into this file made `setHostSettings` fail with HTTP 500 and
+`The settings file is unreadable`. Normal transfers must mirror sections through
+`getHostSettings`/`setHostSettings`, preserve existing per-section collapse state,
+and verify saved UUID membership without changing unrelated preferences.
+
+For an already malformed native file, quiesce settings writers and run the
+bounded helper as the Computer owner with that Computer's actual data root:
+
+```bash
+python3 recovery/hooks/repair-native-sidebar-settings.py \
+  --settings /private/computer-data/settings.json \
+  --backup-dir /private/native-settings-backups
+```
+
+The default is a dry run. Add `--apply` after reviewing the missing-field count.
+It adds only missing `agentIds: []` and `isCollapsed: false`, preserves existing
+values and unknown fields, saves the exact original with mode 0600, then replaces
+the file atomically with ownership preserved. The backup directory must be
+private and owned. Explicit invalid values, duplicate JSON keys, non-finite
+JSON, oversized files, unsupported versions and symlink files refuse repair.
+An observed concurrent write aborts; the rename does not acquire a native writer
+lock. This is a narrow repair, not full native configuration validation. Verify
+`getHostSettings`, an authorized `setHostSettings`, and its exact readback after
+the host notices the file change. It does not remap IDs, pins, histories or
+routines and does not restart the Computer.
+
+### Desktop persistence
+
 Export fresh `ListGrokBotAgents` and `GetGrokBotUserRuntimeSettings` responses
 privately using the signed-in owner session. Review the canonical UUIDs, section
 membership and pins. Quit the affected app normally before applying; the script

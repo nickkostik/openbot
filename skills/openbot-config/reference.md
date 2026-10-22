@@ -2,6 +2,30 @@
 
 Use with [SKILL.md](SKILL.md) and [the coordinated update guide](../../docs/updating.md). Source identity is `nickkostik/openbot`. Examples describe product schemas, not a deployed account or completed delivery. Replace placeholders privately; never commit credentials, vendor bundles, generated engine artifacts or conversation data.
 
+## Native Computer sidebar preferences
+
+Account runtime sections and native Computer settings use different schemas. Native version-1 `settings.json` requires both `agentIds` and `isCollapsed` on every section, including an empty Unassigned section. A section has this shape inside the existing settings object; this is not a replacement settings file:
+
+```json
+{"id":"unassigned","name":"Unassigned","agentIds":[],"isCollapsed":false}
+```
+
+For normal authorized transfers, use the selected Computer's native `getHostSettings`/`setHostSettings` API and existing authentication. Merge canonical section UUID membership into the native objects, retain each section's existing collapse state and unknown metadata, preserve unrelated host preferences, and verify the exact saved membership by readback. Never copy raw account section objects into native `settings.json`. This native preference API is separate from OpenBot's `/api/save`; no new save kind or hop reload behavior is involved.
+
+An earlier raw copy can make `setHostSettings` return HTTP 500 with `The settings file is unreadable`. Quiesce settings writers, inspect a private copy, and run the bounded helper as the Computer owner using the actual settings path and reviewed installed package:
+
+```bash
+python3 /path/to/openbot/recovery/hooks/repair-native-sidebar-settings.py \
+  --settings /private/computer-data/settings.json \
+  --backup-dir /private/native-settings-backups
+```
+
+This defaults to dry run and reports only counts/digests. Review `changedFields`, then add explicit `--apply` for an authorized repair. The helper adds only missing `agentIds: []` and `isCollapsed: false`; it preserves existing values, section order, unknown fields and all other settings. An absent `sidebarSections` key and an explicit empty array remain distinct. It never infers missing members, remaps IDs/pins, merges histories or changes mode, harness, routines or Computer lifecycle.
+
+Apply requires a private owned backup directory. The exact original is saved with mode 0600 before an ownership-preserving atomic replacement; the resulting settings file is also 0600. The input is bounded to 4 MiB, 500 sections and 5000 member strings per section. Unsupported versions, invalid explicit values, duplicate section IDs or JSON keys, non-finite JSON, oversized or nonregular files and final-component symlinks refuse repair. An observed concurrent write aborts, but the rename is not a native writer lock: callers must control settings writers.
+
+This is a narrow missing-field repair, not full native configuration validation. After the host notices the change, verify `getHostSettings`, an authorized preference save and exact readback while comparing unrelated preferences. Do not restart the Computer or change routing to make this test pass. Keep settings and backups private; they may contain credentials. [Desktop recovery procedure](../../recovery/desktop-sidebar-authority/README.md#native-computer-preferences).
+
 ## Installation
 
 Run the reviewed fork on the authenticated Computer, with the native host already installed:

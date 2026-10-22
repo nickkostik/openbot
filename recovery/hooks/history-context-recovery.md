@@ -93,6 +93,13 @@ Required live procedure:
    requires incremental preservation. Remap sections, pins and explicit room
    members, then reveal verified replacements and hide originals. Preserve all
    original BOX data. Refresh the bot-readable roster and test a desktop restart.
+   Account runtime section objects omit native persistence fields. Mirror them
+   through `getHostSettings`/`setHostSettings`, retaining each Computer's existing
+   `isCollapsed` values and supplying `agentIds: []` for an empty section. Do not
+   copy raw account objects into native `settings.json`. If an earlier copy
+   already made version-1 settings unreadable, use
+   `repair-native-sidebar-settings.py` as described in the desktop recovery guide,
+   then verify native preference writes and readback before cutover.
 
 After handoff, the platform fences BOX transcript writers. Do not flip a bot
 back to BOX or bypass that fence to append a late historical reply. Preserve the
