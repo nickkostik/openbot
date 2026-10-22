@@ -76,10 +76,36 @@ Required live procedure:
    and read back the root bytes and digest before the native Temporal handoff.
 5. Read back the Temporal harness and full transcript, verify historical payloads
    and ordering, and run bounded live recall checks. A hop probe is insufficient.
+   A native Temporal handoff does not guarantee legacy routine registration.
+   `temporal-routine-transfer.py` lets the authenticated owner runner move the
+   existing global routine IDs using `AutomationsService.CreateSandAutomation`
+   with the original `sandAutomationId` and the verified new `sandAgentId`.
+   Keep exact workflows and disabled status, then independently read back both
+   bindings and native routine records, including real run history. Never mint
+   new IDs for those routines or infer their enabled policy from a default.
+   The helper accepts immutable source binding/record snapshots, an owner RPC
+   adapter and a durable private checkpoint callback. It checks the whole fleet
+   before writing; after an uncertain response, reuse the same snapshots and
+   resolve the outcome by authoritative readback. Gate sidebar cutover on its
+   final `verified` receipt. The helper does not enable routines or switch a
+   harness and refuses active routines, unrelated target rows and edited inputs.
 6. Recheck the original append boundary immediately before cutover. New activity
    requires incremental preservation. Remap sections, pins and explicit room
    members, then reveal verified replacements and hide originals. Preserve all
    original BOX data. Refresh the bot-readable roster and test a desktop restart.
+
+After handoff, the platform fences BOX transcript writers. Do not flip a bot
+back to BOX or bypass that fence to append a late historical reply. Preserve the
+original envelope and bytes privately, then use an explicitly authorized,
+single native Temporal context synchronization turn containing quoted history,
+its source ID, timestamp and payload digest. Clearly mark it as past data and
+forbid replay of historical actions. Journal the send before calling it; verify
+the exact input and a native reply before accepting that incremental boundary.
+The quoted import is visible as a context synchronization message, rather than
+an invented original Temporal transcript event. Preserve this distinction in
+receipts. An old message may also acquire the platform's Boolean `widgetSkipped`
+delivery annotation after a real turn. Accept only that reviewed addition when
+every other field is identical; preserve both payload hashes and the original.
 
 The helper does not imply that every archived byte fits a model context window.
 Use the actual route capacity and retain complete source archives. Do not
