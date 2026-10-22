@@ -79,9 +79,41 @@ smaller expected object. The result buffers the complete object in memory;
 native decoding, integrity checks and any subsequent writes remain the
 caller's responsibility. Never print or commit the signed URL.
 
+## Native snapshot transport
+
+`patch-store-transport.py` opts the native v2 store's `manifest.json` reads into
+the reviewed range reader. Other objects keep their original transport. This
+addresses large canonical manifests whose single HTTP response is repeatedly
+terminated. It preserves native envelope parsing, manifest validation, writer
+fencing and missing-object semantics. It never clears or reconstructs a
+manifest, claims a partial backup is complete, or changes a bot's harness.
+
+The patch also cancels every v2 buffered PUT response body before returning,
+throwing or retrying a conditional-write conflict. In particular, S3's 412
+response for an existing immutable blob must release its connection. Existing
+409 retry bounds, immutable 412 success and mutable conflict handling remain
+unchanged. See the [Undici response lifecycle guidance](https://github.com/nodejs/undici#garbage-collection).
+
+Install `box-store-range-read.cjs` at a persistent, reviewed absolute path, then
+run a dry run against the current native bundle:
+
+```sh
+python3 recovery/hooks/patch-store-transport.py \
+  --host /opt/sand/sand-host/host-main.cjs \
+  --range-reader /home/box/sand-data/openbot-hooks/box-store-range-read.cjs
+```
+
+Add `--apply` after review. The adjacent `patch-computer-egress.py` provides
+the same syntax-checked, atomic installer and independent private backup.
+Unknown native implementations and partial or drifted patches are refused.
+The helper does not restart a process. Load it through the native supervisor
+while idle, then verify an actual complete snapshot, durable manifest readback
+and any subsequent migration. Recheck after native host updates.
+
 Run the targeted checks with:
 
 ```sh
 python3 -m unittest discover -s recovery/hooks -p test_patch_computer_egress.py
+python3 -m unittest discover -s recovery/hooks -p test_patch_store_transport.py
 node --test recovery/hooks/test_box_store_range_read.mjs
 ```
