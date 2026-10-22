@@ -17,7 +17,7 @@ Read the selected host/data paths, literal mode, current catalog/default, bot pi
 
 Preserve existing accounts/IDs, model assignments, histories, routine switches, MCP/ACP settings, selected engine and network identity unless the user requested that change. Do not remint identities or copy server-owned bots to BOX merely to repair routing. Profile/roster health is not actual send or delivery proof.
 
-Use JSON for a configuration-only edit when mode is Custom, the selected host has `/* openbot-stock-wrap */`, `/api/state` succeeds and the published `openbot-ui.pid` identifies the owned live service. Plan/secrets/maps/log/injection/bot-model edits are read on the next request. A request already in flight keeps its route. Otherwise reconcile; do not bounce the host for ordinary catalog edits.
+Use JSON for a configuration-only edit when mode is Custom, the selected host has `/* openbot-stock-wrap */`, `/api/state` succeeds and the published `openbot-ui.pid` identifies the owned live service. Plan/secrets/maps/log/injection/bot-model edits are read on the next request. A request already in flight keeps its route. Otherwise reconcile; do not bounce the host for ordinary catalog edits. Native Computer `settings.json` is separate from hot-read OpenBot plan files: mirror sidebar sections with `getHostSettings`/`setHostSettings` and readback, preserving collapse state and unrelated preferences. Never copy raw account section objects into that file; use the [bounded native preference repair](reference.md#native-computer-sidebar-preferences) only for already unreadable version-1 settings.
 
 ## Install or update source
 
