@@ -29,9 +29,31 @@ layouts are refused without changing the archive. This supports the reviewed
 Linux build; it is not a compatibility promise for future releases or other OSes.
 
 ```bash
+# Quit the desktop normally first.
 sudo env GROKBOT_ASAR_PATCH_BACKUPS="$HOME/.local/share/openbot/desktop-sidebar-backups" \
-  python3 recovery/desktop-sidebar-authority/patch-sidebar-authority.py
+  GROKBOT_CODE_CACHE_DIR="$HOME/.config/Grok Bot/v8-code-cache" \
+  python3 recovery/desktop-sidebar-authority/patch-temporal-sidebar-preferences.py
 ```
+
+The composite installer also repairs section preferences for Temporal. Stock
+0.75 reads sections from the old Computer and requires a successful Computer
+write before saving them to the server. With that Computer asleep, recovered
+bots can remain in stale sections and ordinary section edits fail. The repair
+reads and writes the existing account runtime settings directly, as pins already
+do. It returns the server's saved sections, propagates read/write failures, and
+removes the renderer's Computer-sleep gate for this preference store only. It
+does not wake the old Computer or change bot execution. Unset preferences remain
+distinct from an explicit empty list. Existing section IDs and member order are
+preserved. Both main-process replacements must remain in the same packed asset;
+unknown or partial layouts are refused before installation.
+
+The native main-process loader stores V8 bytecode by build ID. Keeping ASAR
+asset lengths unchanged can leave old bytecode accepted for changed source.
+The composite installer therefore refuses a running desktop, backs up and
+invalidates only its `main-app-*.v8` caches before changing the main process,
+and preserves other caches. Set `GROKBOT_CODE_CACHE_DIR` explicitly for a custom
+profile. `--check` validates the archive without writes. See the
+[Node V8 code-cache contract](https://nodejs.org/api/vm.html#new-vmscriptcode-options).
 
 `GROKBOT_ASAR` overrides the installed archive path. The systemd examples assume
 the scripts are installed in `~/.local/share/openbot/desktop-sidebar-recovery/`
