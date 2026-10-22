@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "repository": "nickkostik/openbot",
-  "sourceCommit": "0e0f5a3e9ed340d77b3caea20bb3cfc2202d6ee9",
-  "sourceFileCount": 388,
+  "sourceCommit": "22058ebb3eb112b6b4cf286d9083932519d9bb95",
+  "sourceFileCount": 408,
   "publicDocumentation": true,
   "files": {
     ".github/PULL_REQUEST_TEMPLATE.md": {
@@ -10,8 +10,8 @@
       "sha256": "4356d5dd04aa1b838d90aa18ff4c7729e7f25e1d12edb536a8ccd52ce7cd707f"
     },
     ".github/workflows/ci.yml": {
-      "bytes": 827,
-      "sha256": "6e6644a4f3d8cc5e0ad3b6faa3c23073d863d58caeeaf353c37eb6520f1fc4e1"
+      "bytes": 1010,
+      "sha256": "e831a0d7a30325883eb7e20268d4b26a95b58aeb8f06b8e2c90fde587df365cc"
     },
     ".gitignore": {
       "bytes": 745,
@@ -70,8 +70,8 @@
       "sha256": "80d2f174722d52e8063b2f5eae9c9eb1bbce028ee49720a093a5c441a154327e"
     },
     "docs/portable-recovery.md": {
-      "bytes": 11748,
-      "sha256": "5f894d25d3a3f8cac6e6e9be03befbc2cb34cf350947e060790ea097a3d02662"
+      "bytes": 12479,
+      "sha256": "0a0c301d1bb7853cfaa1c959788e4e84647a3af0256073fe2167345b27306a0e"
     },
     "docs/public-release.md": {
       "bytes": 4984,
@@ -345,6 +345,62 @@
       "bytes": 2698,
       "sha256": "d845a079812c8ad9f22d4861c88b004bb2747275241adbff5231bf67f7e372b1"
     },
+    "recovery/desktop-sidebar-authority/ensure-sidebar-patches.sh": {
+      "bytes": 2496,
+      "sha256": "e457a67a453ab6dd44095db31719f48dc8c97933f51e11aaf21980d2272afdb4"
+    },
+    "recovery/desktop-sidebar-authority/evidence/client-verification.json": {
+      "bytes": 1016,
+      "sha256": "187929d232cb77917938e238f1ae2eac5a7bae1421bd6c7f5e8398292847b3ff"
+    },
+    "recovery/desktop-sidebar-authority/patch-sidebar-authority.py": {
+      "bytes": 10466,
+      "sha256": "a6f43f9331addee147d6d56f45a2da6bc332662dffe92d9b16afde7522d06498"
+    },
+    "recovery/desktop-sidebar-authority/README.md": {
+      "bytes": 6492,
+      "sha256": "3d848170064ecf458daa879268395e7663d94787b9abba240a7565c795bb3160"
+    },
+    "recovery/desktop-sidebar-authority/repair-client-cache.py": {
+      "bytes": 7625,
+      "sha256": "d693564b743d8199aef7e9684e914d9c7ec77af7264c1eba43c7fb4122c3a17e"
+    },
+    "recovery/desktop-sidebar-authority/systemd/grokbot-desktop.service.d/sidebar-authority.conf": {
+      "bytes": 315,
+      "sha256": "da244253d279a118872af1f481e3977b1a51f8c24a1d347543f0d5ae9d38a241"
+    },
+    "recovery/desktop-sidebar-authority/systemd/grokbot-sidebar-patches-timer.service": {
+      "bytes": 225,
+      "sha256": "03ba423daa48466c6e8a86d61d1256132a95175ca29eee00c5fb989c939f931a"
+    },
+    "recovery/desktop-sidebar-authority/systemd/grokbot-sidebar-patches-timer.timer": {
+      "bytes": 168,
+      "sha256": "3d7281da5c715e52f904707fcf74f1d955a9b4a11970850916094b3bc63901da"
+    },
+    "recovery/desktop-sidebar-authority/systemd/openbot-870-tunnel.service.d/panel-singleton.conf": {
+      "bytes": 199,
+      "sha256": "18bf28c5e4a7837ab08fdbdc8d80dcace476630a133ae37bced7459bd44bcfef"
+    },
+    "recovery/desktop-sidebar-authority/test_patch_sidebar_authority.py": {
+      "bytes": 10938,
+      "sha256": "b0c9d675b5f25ee636e1650a1a4962eabe538cde2c9f80799fc0afb885bbaa63"
+    },
+    "recovery/history-identities/normalize_history_entry_ids.py": {
+      "bytes": 7814,
+      "sha256": "1f581fcb32f3a7da07601cb7bd950d36f9efa057fd642c4509b38faa399ce8b3"
+    },
+    "recovery/history-identities/README.md": {
+      "bytes": 1530,
+      "sha256": "c7223ea9bc99750a5434ffe63b9b2af1f8925085817143fed1dce4dd10387f2a"
+    },
+    "recovery/history-identities/test_normalize_history_entry_ids.py": {
+      "bytes": 5054,
+      "sha256": "508d425deaccdda9cef5769b3c3e29dcb00871e889134bcf294504b4c707e3b1"
+    },
+    "recovery/hooks/box-store-range-read.cjs": {
+      "bytes": 6098,
+      "sha256": "5f13520a9f9b3993ddf34d420538b2a4963dfc8ebfe2bce7f40b85561553d39a"
+    },
     "recovery/hooks/browser-egress.py": {
       "bytes": 7502,
       "sha256": "3d718aad31c57d89ef15a46911636936b57652cac585393d6e48b9a1b8eb5450"
@@ -425,6 +481,10 @@
       "bytes": 10917,
       "sha256": "3c3a77aa896b9cd80ba99e35b9b5f37ab6fc2cb8d3ebe8e2c4679af3c0527724"
     },
+    "recovery/hooks/NETWORK_RECOVERY.md": {
+      "bytes": 4333,
+      "sha256": "60dda21b7eb66405ad3a2e927194c977113b2a06770733c6d567d823e6776576"
+    },
     "recovery/hooks/openbot-auto-assign.py": {
       "bytes": 4034,
       "sha256": "11ad01be0dc80221afab793032eefbd05dac064ca2c5f78df7fc86d17e637cd2"
@@ -436,6 +496,14 @@
     "recovery/hooks/patch-acp-fleet.py": {
       "bytes": 8172,
       "sha256": "d45ab38fc961863d8ec7121895041d803a2410d6cb6942e0c1a1b3602859599c"
+    },
+    "recovery/hooks/patch-computer-egress.py": {
+      "bytes": 4984,
+      "sha256": "f253fd7e898e88b4b57ec697dcdc0b2fde0536689fd00818eea83c7aaee79c64"
+    },
+    "recovery/hooks/patch-working-state-listing.py": {
+      "bytes": 1860,
+      "sha256": "8fe4a33976e529377f117109aa686fe4d20ad4548ffbfbcd8390984df51d66db"
     },
     "recovery/hooks/prepare-local-engine-wrap.mjs": {
       "bytes": 1751,
@@ -517,6 +585,10 @@
       "bytes": 22929,
       "sha256": "2c431a5123f4276595ef37356b1f6d07ca41cebd3b03ef8625388818e5eac5f1"
     },
+    "recovery/hooks/test_box_store_range_read.mjs": {
+      "bytes": 5220,
+      "sha256": "8259d01c6699cac7bb47c84b29da2e6eaf7ffed3ca58540c597f7ab8ea5940f3"
+    },
     "recovery/hooks/test_browser_egress.py": {
       "bytes": 11272,
       "sha256": "8cfe86ff7a950a5ddbafd826f7fb5ca0d0698882fdea5dd4d6f43b63e12996e7"
@@ -588,6 +660,14 @@
     "recovery/hooks/test_patch_acp_fleet.py": {
       "bytes": 6097,
       "sha256": "8c437cd6946980dff9451c624a3e5b558619ca7f7d0766771b5a680284ec8291"
+    },
+    "recovery/hooks/test_patch_computer_egress.py": {
+      "bytes": 4390,
+      "sha256": "21f3dc0576f576a5d96a46e009d96489052999aacce185de6f502bf2a1ae924a"
+    },
+    "recovery/hooks/test_patch_working_state_listing.py": {
+      "bytes": 1351,
+      "sha256": "1ea80d4d252e2d2d7c3b5f81298f13f6d8325ad25ca51b5399f0b8432df59cff"
     },
     "recovery/hooks/test_payload_recovery.py": {
       "bytes": 3182,
@@ -694,12 +774,12 @@
       "sha256": "bea22f6b35ca6bef55d61766e168bc63525190930614f4e1679cfa771036c018"
     },
     "recovery/README.md": {
-      "bytes": 11748,
-      "sha256": "5f894d25d3a3f8cac6e6e9be03befbc2cb34cf350947e060790ea097a3d02662"
+      "bytes": 12479,
+      "sha256": "0a0c301d1bb7853cfaa1c959788e4e84647a3af0256073fe2167345b27306a0e"
     },
     "scripts/export-shareable.mjs": {
-      "bytes": 7891,
-      "sha256": "fbbdb791636c044d92a91278a484efd66d9b722555e695cc8aa8660c7e6f0118"
+      "bytes": 7962,
+      "sha256": "fbdc424952c9f81d8fd565764d13407d5908b8b37c47be13f1d2879d62ef8676"
     },
     "SECURITY.md": {
       "bytes": 375,
@@ -1042,8 +1122,8 @@
       "sha256": "3e5ef7fb6293abc9714b5c517da96345e7563d5d3c184c5b1aa93f877d25f1d3"
     },
     "src/portable-installer.test.ts": {
-      "bytes": 22848,
-      "sha256": "35a11e51d320bf54f69d95b34fa9680c28187eea3c2dbecfcdaced1b7fede916"
+      "bytes": 23370,
+      "sha256": "78131d43c68236f0f82b2a4a5aad8e8a563fda48c5fe6b1571bf7245f3a21867"
     },
     "src/qrcode-png.test.ts": {
       "bytes": 1762,
