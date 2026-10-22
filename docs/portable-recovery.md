@@ -92,6 +92,11 @@ This loop recovers a daemon inside a running Computer. A pod/image replacement k
 
 ## Verification required for each installation
 
+For a native Computer host that cannot reach its backend, or a large store
+object whose download repeatedly resets, see the opt-in
+[network recovery helpers](../recovery/hooks/NETWORK_RECOVERY.md). These helpers
+do not perform a bot migration or replace the native manifest writer.
+
 For affected Linux desktop clients that retain retired BOX rows after a Temporal
 transfer, see the opt-in [desktop sidebar recovery](../recovery/desktop-sidebar-authority/README.md).
 Apply and verify it separately on every client; a repaired Computer does not

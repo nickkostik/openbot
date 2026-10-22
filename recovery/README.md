@@ -92,6 +92,18 @@ This loop recovers a daemon inside a running Computer. A pod/image replacement k
 
 ## Verification required for each installation
 
+For a native Computer host that cannot reach its backend, or a large store
+object whose download repeatedly resets, see the opt-in
+[network recovery helpers](../recovery/hooks/NETWORK_RECOVERY.md). These helpers
+do not perform a bot migration or replace the native manifest writer.
+
+For affected Linux desktop clients that retain retired BOX rows after a Temporal
+transfer, see the opt-in [desktop sidebar recovery](../recovery/desktop-sidebar-authority/README.md).
+Apply and verify it separately on every client; a repaired Computer does not
+clear another desktop's cache. Existing bot histories and routine definitions
+remain intact. Routines default to disabled during recovery unless the owner
+explicitly asks to enable them.
+
 - Open the panel and check its active model against the next real bot turn.
 - Confirm the turn attaches locally and completes its stream; HTTP 200 alone is insufficient.
 - Verify a tool call returns its result, including a live voice call before hangup.
@@ -102,7 +114,3 @@ This loop recovers a daemon inside a running Computer. A pod/image replacement k
 Provider subscription credentials are adapter-specific. OpenAI OAuth uses the authenticated Responses adapter; an API key uses its configured origin/protocol. OpenCode Go accounts use the direct Go endpoint in independent families. Existing per-bot model/reasoning choices, compaction/cache policy and MCP/ACP configuration must survive updates.
 
 See [portable installation](../docs/portable-installation.md), the configuration skill and reference for concrete disk schemas and supervisor commands. Keep the prior engine/source generation and an encrypted backup until a fresh turn and tool result verify the new generation.
-
-[Linux desktop sidebar recovery](desktop-sidebar-authority/README.md) repairs stale roster routing and invalid transcript dates after a Temporal transfer.
-
-[History entry identity recovery](history-identities/README.md) prepares a detached copy of archived messages with bounded generated entry IDs and a private alias receipt.
