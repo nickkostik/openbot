@@ -12,7 +12,7 @@ const rootFiles = new Set([
   'package.json', 'package-lock.json', 'tsconfig.json', 'vite.config.ts',
   'install.sh', 'uninstall.sh',
 ]);
-const roots = ['src/', 'web/', 'ui/', 'payload/', 'skills/', '.github/', 'scripts/', 'docs/', 'agent-box/', 'recovery/hooks/'];
+const roots = ['src/', 'web/', 'ui/', 'payload/', 'skills/', '.github/', 'scripts/', 'docs/', 'agent-box/', 'recovery/hooks/', 'recovery/desktop-sidebar-authority/'];
 const publicDocuments = new Map([
   ['README.md', 'docs/shareable-readme.md'],
   ['README.zh-CN.md', 'docs/shareable-readme.zh-CN.md'],

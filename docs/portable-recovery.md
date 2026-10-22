@@ -92,6 +92,13 @@ This loop recovers a daemon inside a running Computer. A pod/image replacement k
 
 ## Verification required for each installation
 
+For affected Linux desktop clients that retain retired BOX rows after a Temporal
+transfer, see the opt-in [desktop sidebar recovery](../recovery/desktop-sidebar-authority/README.md).
+Apply and verify it separately on every client; a repaired Computer does not
+clear another desktop's cache. Existing bot histories and routine definitions
+remain intact. Routines default to disabled during recovery unless the owner
+explicitly asks to enable them.
+
 - Open the panel and check its active model against the next real bot turn.
 - Confirm the turn attaches locally and completes its stream; HTTP 200 alone is insufficient.
 - Verify a tool call returns its result, including a live voice call before hangup.

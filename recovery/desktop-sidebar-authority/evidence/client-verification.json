@@ -1,0 +1,31 @@
+{
+  "checkedAtUtc": "2026-10-22T08:33:00Z",
+  "build": "Grok Bot 0.75.0 Linux",
+  "stockArchiveSha256": "c4bd4c17020ddada4a9cdddea9bbf27c6ef0d52388c1a100e6eb28e7a36c35fb",
+  "patchedArchiveSha256": "94bf7ca361621cd835a5e1c8cf64cea970739b1c4b351f3971769721355776ea",
+  "installedLinuxClients": 2,
+  "affectedDesktop": {
+    "cachedBefore": 172,
+    "authoritative": 45,
+    "renderedAfter": 45,
+    "missingRendered": 0,
+    "retiredRendered": 0,
+    "hiddenAfterRecovery": 0,
+    "unassigned": 0,
+    "sectionSizes": [3, 16, 17, 9],
+    "hideAndUnhideVerified": true,
+    "boundedUiSendReplyRetainedAfterRestart": true
+  },
+  "reproducedDateIssue": {"invalidEntries": 8, "affectedConversations": 5},
+  "completeRenderAuditOn870": {
+    "conversations": 45,
+    "ready": 45,
+    "loadFailures": 0,
+    "rendererErrorBoundaries": 0,
+    "providerCalls": 0
+  },
+  "stockUpdateReapplicationTestedOn870": true,
+  "routinesEnabledAfterSeparatePause": 0,
+  "historyContextMergeVerified": false,
+  "mobileVerified": false
+}

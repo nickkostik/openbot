@@ -102,3 +102,5 @@ This loop recovers a daemon inside a running Computer. A pod/image replacement k
 Provider subscription credentials are adapter-specific. OpenAI OAuth uses the authenticated Responses adapter; an API key uses its configured origin/protocol. OpenCode Go accounts use the direct Go endpoint in independent families. Existing per-bot model/reasoning choices, compaction/cache policy and MCP/ACP configuration must survive updates.
 
 See [portable installation](../docs/portable-installation.md), the configuration skill and reference for concrete disk schemas and supervisor commands. Keep the prior engine/source generation and an encrypted backup until a fresh turn and tool result verify the new generation.
+
+[Linux desktop sidebar recovery](desktop-sidebar-authority/README.md) repairs stale roster routing and invalid transcript dates after a Temporal transfer.
