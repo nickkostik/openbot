@@ -261,6 +261,38 @@ Activation verifies destinations before retiring sources, preserves sidebar/main
 
 Existing journals are retained. Only an explicitly requested next generation can roll an entirely active journal forward while keeping prior mapping/backups and rejecting cycles/conflicts. No user/fleet IDs, fixed roster, copy artifacts or credentials belong in product exports.
 
+## Temporal peer context and room membership
+
+After an authorized native handoff, the complete owner `ListGrokBotAgents` response is authoritative for Temporal identities, native `kind` and `memberAgentIds`. That response does not supply `isHiddenFromSidebar` or `isRemovedFromSidebar`; the caller must separately review current native client visibility before selecting the canonical allowlist. Native local `listAgents` summaries can flatten Temporal ROOM kinds or omit their members. Do not rebuild an Official peer index from those BOX-oriented summaries or infer membership from names, transcripts or missing local group files.
+
+### Preserve Official context and project reviewed peers
+
+`publish-bot-context.py` is the Custom BOX publisher. With literal `official`, or a missing mode file, `plan`, `publish` and `update-instructions` return `status: "official-preserved"` without reading the native roster or writing the published roster or descriptions. Missing mode is a preservation guard for this publisher only; it does not select Official or change global mode authority. An unknown mode refuses publication and preserves existing context. Custom retains the checked BOX projection and explicit instruction update behavior.
+
+`recovery/hooks/temporal-peer-context.py` exposes `project(roster, canonical_ids)`. The owner runner supplies the complete authenticated owner roster and an explicit list of current canonical UUIDs reviewed against current client visibility, not a name-based selection. Projection verifies unambiguous canonical identities, completed Temporal harness and owner/manage permissions. It rejects hidden/removed flags when those are explicitly supplied, but absent flags in the owner response are not visibility proof. Native kind must be `GROK_BOT_AGENT_KIND_AGENT` or `GROK_BOT_AGENT_KIND_ROOM`; each room member must be a unique canonical owned Temporal individual included in that separately reviewed allowlist. Empty explicit membership remains empty; the projector does not invent missing members.
+
+The result contains only `id`, `name`, literal `harness: "temporal"`, native-kind-derived `isGroup` and actual `memberIds`. It exports no role, transcript, routine, credential or configuration contents. This pure module performs no file writes, sends, visibility changes or harness changes. The authorized runner privately snapshots its authority and manages any checked publication at the actual Computer's model-readable workflow path; module output is not automatic installation or delivery proof.
+
+The same module's `official_notice(description, computer_label, roster_path)` preserves the specialist role and replaces only recognized generated recovery/shared/Official notice blocks. Duplicated, unbalanced or reversed markers refuse instead of removing arbitrary description content. Supply the owner's current Computer label and actual absolute model-readable roster path; never hardcode another installation's Computer or paths. The generated notice states current Official Temporal execution, historical-ID/action boundaries and the user's disabled-routine policy. It does not change routing, routine switches or other bot settings. Applying a description remains a separate authorized native update with private original backup and field-preserving readback; background BOX publication does not apply it.
+
+### Restore explicit Temporal room members
+
+`recovery/hooks/temporal-room-transfer.py` exposes `restore_memberships(plans, identity_mapping, canonical_agent_ids, rpc, checkpoint)`. It is a native owner-API adapter core, not a CLI or a new `/api/save` kind. The caller supplies immutable private source snapshots, an explicitly verified archived-to-current UUID mapping, a canonical individual allowlist checked separately against current client visibility, authenticated RPC and a durable private checkpoint callback. Preserve original BOX files and snapshots; do not edit archive evidence to satisfy preflight.
+
+Each reviewed room plan requires:
+
+| Field | Authority |
+|---|---|
+| `sourceId`, `sourceMemberIds` | Canonical archived room UUID and its explicit unique original member UUIDs. |
+| `targetId`, `targetServerId` | Exact previously verified current Temporal room UUID and native decimal-string server row ID. |
+| `beforeMemberIds` | Privately captured empty, original-source or already verified target membership; partial/interleaved edits refuse. |
+
+Every archived member must map explicitly to a unique canonical owned Temporal individual in the caller's allowlist reviewed against current client visibility. Whole-fleet preflight verifies every current room's Temporal harness, ROOM kind, owner/manage permissions, exact server ID and expected existing membership before the first write. Explicitly supplied hidden/removed member flags reject the operation; `ListGrokBotAgents` alone does not verify sidebar visibility. Unsupported/missing authority, incomplete mappings, duplicate members, changed identities or intervening membership edits refuse rather than remint or overwrite guessed state.
+
+For each room the helper checkpoints a write attempt, calls native `SetGrokBotRoomMembers` only when needed, then obtains fresh owner-roster readback. Verified membership must exactly match the reviewed mapped order, and unrelated metadata/human membership must remain unchanged apart from native `updatedAtMs`. Already correct membership is verified without a write. An uncertain operation must be reconciled from the private checkpoint and fresh native readback before replay; there is no distributed lock over platform writers.
+
+The receipt has `scope: "room-memberships-only"` and records preflight/write/readback phases. It creates no bots or routines and changes no harnesses, visibility, transcripts, contexts or routine enablement. A verified membership receipt is never proof of merged room history, combined working context, successful tool/reply delivery or a complete transfer. Validate those separately, preserve original data and keep disabled routines disabled.
+
 ## Compaction and cache
 
 Custom `payload/context-truncate.cjs` normally chooses the selected canonical model with its effective supported reasoning. Kimi K3 is excluded; its selected-primary exception uses an approved configured cheap fallback. Missing/invalid targets or forbidden MetaKey/ModelHub/N5 routes are refused. Current approved overflow families are configured DeepSeek v4.1 Flash, GPT-6.1 Sol and Muse 1.3 Contributor routes, with account scope, credential/protocol and context preserved. Never add an account or rewrite an origin to satisfy compaction.

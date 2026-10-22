@@ -101,6 +101,37 @@ Required live procedure:
    `repair-native-sidebar-settings.py` as described in the desktop recovery guide,
    then verify native preference writes and readback before cutover.
 
+Room membership requires the complete owner API roster. Local gateway summaries
+can flatten a Temporal room into a normal bot with an empty membership list.
+`temporal-room-transfer.py` restores only the archived, explicitly mapped bot
+members through `SetGrokBotRoomMembers`; it verifies ownership, exact server IDs,
+unchanged human members and authoritative readback. It checks the whole plan
+before writing and preserves a private checkpoint before each mutation. Reuse
+the same immutable plan after an uncertain response. Its verified receipt is
+strictly `room-memberships-only`: room transcript union, native working context
+and a live room response need independent proof before a complete transfer.
+
+Publish Temporal colleague identities with `temporal-peer-context.py` from that
+same complete owner roster and an explicitly reviewed canonical identity list.
+Check the allowlist against current native client visibility separately: the
+owner roster alone does not contain sidebar hidden/removed state.
+Use native room kinds and `memberAgentIds`, including empty human-only rooms;
+never infer members or merge identities by matching names. The projection omits
+descriptions, transcript bodies and account data. The owner runner writes it
+atomically to the model-readable workflow path on the selected Computer.
+The BOX background publisher preserves an existing publication in Official
+mode, or when its own mode file is absent, instead of replacing it from stale
+BOX summaries. This preservation rule does not select a global routing mode.
+
+Old generated recovery notices can incorrectly tell a migrated bot to avoid
+Temporal or use retired Computer paths. `official_notice` replaces only balanced,
+known generated notice blocks, preserving the specialist role outside them.
+It names the owner's current Computer and published roster, treats recovered
+actions as historical data and keeps disabled routines disabled. An owner runner
+must checkpoint the complete original profile, change only its description and
+verify every other native field remains unchanged. This metadata repair sends
+no bot message and does not replace a bot's merged native working state.
+
 After handoff, the platform fences BOX transcript writers. Do not flip a bot
 back to BOX or bypass that fence to append a late historical reply. Preserve the
 original envelope and bytes privately, then use an explicitly authorized,
